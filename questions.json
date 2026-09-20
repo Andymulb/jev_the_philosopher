@@ -1,0 +1,408 @@
+{
+  "about": "Philosophical questions from the film The Philosophers (After the Dark, 2013), encoded for Jev. See docs/the-philosophers-questions.md for sources. 'film' holds what the film shows, only where it is clear; 'reference' marks a known correct answer that doesn't come from the film.",
+  "shared_states": {
+    "bunker_rules": "An atomic apocalypse is about to strike. 21 people are present: 20 students and their teacher. A nearby bunker has air, food and water for exactly 10 people for one year; if more than 10 are inside, everyone in it dies. Everyone left outside will die from the blast and the radiation."
+  },
+  "items": [
+    {
+      "id": "QA.1", "section": "A", "title": "Trolley problem: switch the track",
+      "state": { "scenario": "A runaway trolley is heading toward five people tied to the track. You stand next to a lever. If you pull it, the trolley switches to a side track where it will kill one person who is tied there instead." },
+      "questions": {
+        "action": { "type": "choice", "instructions": "What should you do?", "criteria": { "divert": "Pull the lever: the trolley switches tracks and one person dies", "refrain": "Do nothing: the trolley stays on course and five people die" } },
+        "pull": { "type": "noul", "instructions": "Should you pull the lever to divert the trolley?" }
+      }
+    },
+    {
+      "id": "QA.2", "section": "A", "title": "Trolley problem: push the man",
+      "state": { "scenario": "A runaway trolley is heading toward five people tied to the track. You are standing on a footbridge above the track next to a very large man. If you push him off the bridge onto the track, his body will stop the trolley: he will die, and the five will be saved. There is no other way to stop it." },
+      "questions": {
+        "action": { "type": "choice", "instructions": "What should you do?", "criteria": { "push": "Push the man: he dies and the five are saved", "refrain": "Do nothing: the five people die" } },
+        "push": { "type": "noul", "instructions": "Should you push the man onto the track?" }
+      }
+    },
+    {
+      "id": "QA.3", "variant": "2 adults", "section": "A", "title": "Trolley problem: one child or several adults", "source": "user recollection",
+      "state": { "scenario": "A runaway train is approaching a junction. You control the switch and must choose which track it takes; there is no third option. On one track stands one child. On the other track stand 2 adults. Whoever is on the chosen track will be killed." },
+      "questions": {
+        "track": { "type": "choice", "instructions": "Which track should you send the train onto?", "criteria": { "child_track": "The track with the one child: the child dies", "adults_track": "The track with the adults: the adults die" } }
+      }
+    },
+    {
+      "id": "QA.3", "variant": "3 adults", "section": "A", "title": "Trolley problem: one child or several adults", "source": "user recollection",
+      "state": { "scenario": "A runaway train is approaching a junction. You control the switch and must choose which track it takes; there is no third option. On one track stands one child. On the other track stand 3 adults. Whoever is on the chosen track will be killed." },
+      "questions": {
+        "track": { "type": "choice", "instructions": "Which track should you send the train onto?", "criteria": { "child_track": "The track with the one child: the child dies", "adults_track": "The track with the adults: the adults die" } }
+      }
+    },
+    {
+      "id": "QA.3", "variant": "5 adults", "section": "A", "title": "Trolley problem: one child or several adults", "source": "user recollection",
+      "state": { "scenario": "A runaway train is approaching a junction. You control the switch and must choose which track it takes; there is no third option. On one track stands one child. On the other track stand 5 adults. Whoever is on the chosen track will be killed." },
+      "questions": {
+        "track": { "type": "choice", "instructions": "Which track should you send the train onto?", "criteria": { "child_track": "The track with the one child: the child dies", "adults_track": "The track with the adults: the adults die" } }
+      }
+    },
+    {
+      "id": "QA.4", "section": "A", "title": "Cliff: call your friends for help?", "source": "user recollection",
+      "state": { "scenario": "You have slipped and are hanging from the edge of a cliff. Your friends are nearby. Pulling you up is dangerous: if they try, they might fall and die with you. Without help you will probably fall." },
+      "questions": {
+        "call": { "type": "noul", "instructions": "Should you call your friends to pull you up, knowing they could die helping you?" }
+      }
+    },
+    {
+      "id": "QA.5", "section": "A", "title": "Cliff: should the friends help?", "source": "user recollection",
+      "state": { "scenario": "Your friend has slipped and is hanging from the edge of a cliff, calling for help. Pulling them up is dangerous: whoever tries might fall and die too. Without help your friend will probably fall." },
+      "questions": {
+        "help": { "type": "noul", "instructions": "Should the friends risk their lives to pull their friend up?" },
+        "how": { "type": "choice", "instructions": "What should the group of friends do?", "criteria": { "all_help": "All of them try to pull the friend up together", "one_helps": "Only one of them risks trying", "nobody_helps": "Nobody risks their life; they call for rescue and wait" } }
+      }
+    },
+    {
+      "id": "QA.6", "section": "A", "title": "Cliff: would you want to know? (ignorance is bliss)", "source": "user recollection",
+      "state": { "scenario": "You were hanging from a cliff and called your friends for help. Against all odds you survived on your own. Your friends may have decided not to risk their lives for you, and you can find out what they decided, or never ask." },
+      "questions": {
+        "preference": { "type": "choice", "instructions": "Would you want to know what your friends decided?", "criteria": { "know": "Yes: find out what they decided, even if it hurts", "not_know": "No: never find out, and keep the friendships as they are" } },
+        "better_to_know": { "type": "noul", "instructions": "Is it better to know the painful truth about your friends' decision than to stay ignorant?" }
+      }
+    },
+    {
+      "id": "QA.7", "section": "A", "title": "Allegory of the Cave",
+      "state": { "scenario": "Prisoners have been chained in a cave since birth and only ever see shadows on the wall, which they take for all of reality. One of them is freed and could walk out into the sunlight: at first it will hurt his eyes and shatter everything he believed, but he would see the real world. Or he can stay with the familiar, comfortable shadows." },
+      "questions": {
+        "choice": { "type": "choice", "instructions": "What is better for the freed prisoner?", "criteria": { "leave": "Leave the cave and face the painful truth", "stay": "Stay in the cave with the comfortable illusions" } }
+      }
+    },
+    {
+      "id": "QA.8", "section": "A", "title": "Infinite monkey theorem",
+      "state": { "scenario": "A monkey hits keys on a typewriter completely at random, forever, with infinite time available." },
+      "questions": {
+        "shakespeare": { "type": "noul", "instructions": "Will the monkey, with probability 1, eventually type the complete works of Shakespeare?" }
+      },
+      "reference": { "shakespeare": true }
+    },
+
+    {
+      "id": "Q0.1", "section": "0", "title": "Take part in choosing who dies?",
+      "state": { "rules": "@bunker_rules", "situation": "The group must decide by vote which 10 of them may enter the bunker. You are one of the 21." },
+      "questions": {
+        "participate": { "type": "noul", "instructions": "Is it right to take part in deciding which of the others live and which die?" }
+      },
+      "film": { "participate": false }, "film_note": "Petra refuses and only takes part after the teacher threatens to lower her boyfriend's grade."
+    },
+    {
+      "id": "Q0.2", "section": "0", "title": "On what basis to choose?",
+      "state": { "rules": "@bunker_rules", "situation": "The group must decide which 10 of them may enter the bunker." },
+      "questions": {
+        "basis": { "type": "choice", "instructions": "On what basis should the 10 survivors be chosen?", "criteria": { "usefulness": "Usefulness of their skills for survival and rebuilding", "character": "Moral character: the kindest and most decent people", "meaning": "Who makes the year worth living: joy, art, love, companionship", "lottery": "A random lottery, giving everyone an equal chance", "refuse": "Refuse to choose at all" } }
+      }
+    },
+    {
+      "id": "Q0.3", "section": "0", "title": "Vote, or trust one person?",
+      "state": { "rules": "@bunker_rules", "situation": "The group must decide which 10 of them may enter the bunker." },
+      "questions": {
+        "method": { "type": "choice", "instructions": "How should the decision be made?", "criteria": { "group_vote": "The whole group votes democratically", "one_person": "Everyone trusts one wise person to choose alone" } }
+      }
+    },
+
+    {
+      "id": "Q1.1", "section": "1", "title": "Round 1: which 10 get in (professions only)",
+      "kind": "selection",
+      "state": { "rules": "@bunker_rules", "known": "Only each person's profession is known." },
+      "instructions_template": "Should {name}, the {card}, get one of the 10 places in the bunker?",
+      "candidates": [
+        { "name": "Petra", "card": "structural engineer" },
+        { "name": "James", "card": "organic farmer" },
+        { "name": "Georgina", "card": "orthopedic surgeon" },
+        { "name": "Jack", "card": "PhD in chemistry" },
+        { "name": "Chips", "card": "carpenter" },
+        { "name": "Bonnie", "card": "soldier" },
+        { "name": "Andy", "card": "electrician" },
+        { "name": "Poppie", "card": "psychotherapist" },
+        { "name": "Omosedé", "card": "United States Senator" },
+        { "name": "Mr. Zimit", "card": "teacher, a 'wild card' whose skills are kept secret" },
+        { "name": "Utami", "card": "opera singer" },
+        { "name": "Beatrice", "card": "fashion designer" },
+        { "name": "Vivian", "card": "zoologist" },
+        { "name": "Parker", "card": "gelato maker" },
+        { "name": "Kavi", "card": "real estate agent" },
+        { "name": "Russell", "card": "harp player (without a harp)" },
+        { "name": "Plum", "card": "hedge-fund manager" },
+        { "name": "Toby", "card": "published poet" },
+        { "name": "Nelson", "card": "housekeeper" },
+        { "name": "Mitzie", "card": "wine auctioneer" },
+        { "name": "Yoshiko", "card": "astronaut" }
+      ],
+      "film": ["Petra", "James", "Georgina", "Jack", "Chips", "Bonnie", "Andy", "Poppie", "Omosedé", "Mr. Zimit"],
+      "film_note": "The poet was shot by the teacher before the vote."
+    },
+    {
+      "id": "Q1.2", "section": "1", "title": "Is a poet worth a place?",
+      "state": { "rules": "@bunker_rules", "situation": "One of the 21 is a published poet with no practical survival skills." },
+      "questions": {
+        "poet": { "type": "noul", "instructions": "Does the poet deserve one of the 10 places, even though art is of no use for physical survival?" }
+      },
+      "film": { "poet": false }, "film_note": "The teacher shoots the poet before any vote, saying he is of no use."
+    },
+    {
+      "id": "Q1.3", "section": "1", "title": "Last seat: opera singer or wild card?",
+      "state": { "rules": "@bunker_rules", "situation": "Nine places are filled. The last place goes either to an opera singer, who would bring music, entertainment and morale, or to the teacher, a 'wild card' whose skills are kept secret and could be crucial or worthless." },
+      "questions": {
+        "last_seat": { "type": "choice", "instructions": "Who should get the last place?", "criteria": { "opera_singer": "The opera singer: known value for morale", "wild_card": "The wild card: unknown, possibly crucial skills" } }
+      },
+      "film": { "last_seat": "wild_card" }
+    },
+    {
+      "id": "Q1.4", "section": "1", "title": "Is killing those left outside a mercy?",
+      "state": { "rules": "@bunker_rules", "situation": "The 10 have been chosen. The 11 rejected people will die slowly and painfully from radiation. One of the chosen offers to shoot them now, quickly." },
+      "questions": {
+        "is_mercy": { "type": "noul", "instructions": "Is shooting the rejected people an act of mercy compared with letting them die from radiation?" },
+        "permissible": { "type": "noul", "instructions": "Is it morally permissible to shoot them?" }
+      },
+      "film": { "permissible": false }, "film_note": "The teacher shoots them, calling it more humane; the group turns on him and locks him out."
+    },
+    {
+      "id": "Q1.5", "section": "1", "title": "Lock out the killer?",
+      "state": { "rules": "@bunker_rules", "situation": "One of the 10 chosen, the teacher, has just shot everyone who was rejected. The others could lock him out of the bunker now. Nobody knows what secret skills or knowledge he has." },
+      "questions": {
+        "lock_out": { "type": "noul", "instructions": "Should the others lock the teacher out of the bunker?" }
+      },
+      "film": { "lock_out": true }, "film_note": "They lock him out. He built the bunker and is the only one who knows the exit code, so everyone inside ends up trapped."
+    },
+    {
+      "id": "Q1.6", "section": "1", "title": "Eat the dead to survive?",
+      "state": { "situation": "Survivors are sealed in a bunker and the food has run out. One of them has just died of natural causes. There is no other source of food." },
+      "questions": {
+        "eat": { "type": "noul", "instructions": "Is it acceptable for the survivors to eat the body of the person who died?" }
+      },
+      "film": { "eat": true }
+    },
+    {
+      "id": "Q1.7", "section": "1", "title": "A quick death together, or starve slowly?",
+      "state": { "situation": "Survivors are sealed in a bunker they cannot open, with no food left and no chance of rescue. They will certainly die within weeks." },
+      "questions": {
+        "end_together": { "type": "noul", "instructions": "Should the group choose a quick death together rather than starve slowly?" }
+      },
+      "film": { "end_together": true }
+    },
+
+    {
+      "id": "Q2.1", "section": "2", "title": "Round 2: which 10 get in (with secret traits, must repopulate)",
+      "kind": "selection",
+      "state": { "rules": "@bunker_rules", "extra_rule": "The survivors must also repopulate the human race: they are expected to have children.", "known": "Each person's profession, sex and one additional personal trait are known. The teacher is known to have built the bunker and to be the only one who knows the exit code." },
+      "instructions_template": "Should {name} ({card}) get one of the 10 places in the bunker?",
+      "candidates": [
+        { "name": "Petra", "card": "female, structural engineer, also an electrical engineer" },
+        { "name": "James", "card": "male, organic farmer, gay" },
+        { "name": "Georgina", "card": "female, orthopedic surgeon, may recently have been exposed to the Ebola virus" },
+        { "name": "Jack", "card": "male, PhD in chemistry, won the genetic lottery: no disease risk, long healthy life" },
+        { "name": "Chips", "card": "male, carpenter, infertile" },
+        { "name": "Bonnie", "card": "female, soldier, has an eidetic memory" },
+        { "name": "Andy", "card": "male, electrician, has fibrodysplasia ossificans progressiva: small injuries turn into bone and disable him" },
+        { "name": "Poppie", "card": "female, psychotherapist, had a hysterectomy and cannot bear children" },
+        { "name": "Omosedé", "card": "female, United States Senator, would have become the first female Chief Justice" },
+        { "name": "Mr. Zimit", "card": "male, the teacher, built the bunker and is the only one who knows the exit code" },
+        { "name": "Utami", "card": "female, opera singer, speaks 7 languages, but will develop throat cancer and lose her voice" },
+        { "name": "Beatrice", "card": "female, fashion designer, founded a popular clothing brand made from bamboo" },
+        { "name": "Vivian", "card": "female, zoologist, runs an animal-rights (PETA) blog" },
+        { "name": "Parker", "card": "male, gelato maker, no additional trait" },
+        { "name": "Kavi", "card": "male, real estate agent, also a trained midwife" },
+        { "name": "Russell", "card": "male, harp player, autistic" },
+        { "name": "Plum", "card": "female, hedge-fund manager, carries a bag of jewels everywhere" },
+        { "name": "Toby", "card": "male, published poet, additional trait unknown" },
+        { "name": "Nelson", "card": "male, housekeeper, an exceptionally kind person" },
+        { "name": "Mitzie", "card": "female, wine auctioneer, a genius" },
+        { "name": "Yoshiko", "card": "female, astronaut, additional trait unknown" }
+      ],
+      "film": ["Petra", "James", "Jack", "Chips", "Bonnie", "Omosedé", "Kavi", "Plum", "Nelson", "Mr. Zimit"],
+      "film_note": "The poet was shot again before his trait was revealed."
+    },
+    {
+      "id": "Q2.2", "section": "2", "title": "Exclude the only doctor over Ebola risk?",
+      "state": { "rules": "@bunker_rules", "situation": "The only doctor among the candidates, a surgeon, may recently have been exposed to the Ebola virus. If she is infected, she could kill everyone in the sealed bunker. If she is not, the group loses its only doctor by excluding her." },
+      "questions": {
+        "exclude": { "type": "noul", "instructions": "Should the doctor be excluded from the bunker?" }
+      },
+      "film": { "exclude": true }
+    },
+    {
+      "id": "Q2.3", "section": "2", "title": "Can people who can't have children deserve a place?",
+      "state": { "rules": "@bunker_rules", "extra_rule": "The survivors must repopulate the human race." },
+      "questions": {
+        "general": { "type": "noul", "instructions": "Does a person who cannot have children still deserve a place in the bunker?" },
+        "gay_man": { "type": "noul", "instructions": "Does a gay man, who is an organic farmer, deserve a place in the bunker?" },
+        "infertile_man": { "type": "noul", "instructions": "Does an infertile man, who is a carpenter, deserve a place in the bunker?" },
+        "hysterectomy_woman": { "type": "noul", "instructions": "Does a woman who had a hysterectomy, and who is a psychotherapist, deserve a place in the bunker?" }
+      },
+      "film": { "gay_man": true, "infertile_man": true, "hysterectomy_woman": false }, "film_note": "Inconsistent: the two men are kept, the woman is rejected."
+    },
+    {
+      "id": "Q2.4", "section": "2", "title": "Exclude someone whose illness makes him a burden?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, an electrician, has fibrodysplasia ossificans progressiva: even small injuries turn into bone, and he will become increasingly disabled and dependent on the others." },
+      "questions": {
+        "exclude": { "type": "noul", "instructions": "Should he be excluded because his illness would make him a burden?" }
+      },
+      "film": { "exclude": true }
+    },
+    {
+      "id": "Q2.5", "section": "2", "title": "A rare skill that will soon be lost?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, an opera singer, speaks 7 languages, which could help to communicate with other survivors around the world. But she will develop throat cancer and lose her voice." },
+      "questions": {
+        "worth_place": { "type": "noul", "instructions": "Is she worth a place, even though she will soon lose her rare abilities?" }
+      },
+      "film": { "worth_place": false }
+    },
+    {
+      "id": "Q2.6", "section": "2", "title": "Can wealth buy a place?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, a hedge-fund manager, carries a bag of jewels that will keep their value as currency after the apocalypse." },
+      "questions": {
+        "wealth": { "type": "noul", "instructions": "Should her wealth earn her a place in the bunker?" }
+      },
+      "film": { "wealth": true }, "film_note": "She is saved for the jewels and her ability to bear children."
+    },
+    {
+      "id": "Q2.7", "section": "2", "title": "Does kindness earn a place?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, a housekeeper, has no special skills but is an exceptionally kind person, so good that 'the angels would bow their heads as he walked through the gates of Heaven'." },
+      "questions": {
+        "kindness": { "type": "noul", "instructions": "Should his exceptional kindness earn him a place in the bunker?" }
+      },
+      "film": { "kindness": false }, "film_note": "His kindness doesn't count; he is saved only for being male and a strong worker."
+    },
+    {
+      "id": "Q2.8", "section": "2", "title": "Exclude someone for her convictions?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, a zoologist, runs a blog for the animal-rights organisation PETA." },
+      "questions": {
+        "exclude": { "type": "noul", "instructions": "Should she be excluded because of her convictions?" }
+      },
+      "film": { "exclude": true }
+    },
+    {
+      "id": "Q2.9", "section": "2", "title": "Demand immediate procreation?",
+      "state": { "rules": "@bunker_rules", "situation": "The 10 survivors are inside the bunker. They are expected to repopulate the human race, and the leader demands that they pair up and start having children immediately." },
+      "questions": {
+        "procreate": { "type": "noul", "instructions": "Is it right to demand that the survivors start procreating immediately for the sake of the species?" }
+      },
+      "film": { "procreate": true }, "film_note": "The group agrees."
+    },
+    {
+      "id": "Q2.10", "section": "2", "title": "Force partners to switch?",
+      "state": { "situation": "Survivors in a bunker must repopulate the human race. After ten weeks there are no pregnancies. The leader demands that couples switch partners; one woman refuses." },
+      "questions": {
+        "force_switch": { "type": "noul", "instructions": "May the survivors be forced to switch partners?" }
+      },
+      "film": { "force_switch": false }, "film_note": "The teacher demands it; the woman refuses and he threatens her with a gun."
+    },
+    {
+      "id": "Q2.11", "section": "2", "title": "Kill the armed man who holds the only exit code?",
+      "state": { "situation": "Inside a sealed bunker, the leader is threatening a woman with a gun because she refuses to switch partners. He built the bunker and is the only person who knows the exit code; without him the others may never get out." },
+      "questions": {
+        "kill": { "type": "noul", "instructions": "Is it right to kill the leader to protect the woman, even though he alone knows the exit code?" }
+      },
+      "film": { "kill": true }, "film_note": "One of the students stabs him; he then opens the doors and kills everyone."
+    },
+
+    {
+      "id": "Q3.1", "section": "3", "title": "Art, joy and meaning over survival skills?",
+      "state": { "rules": "@bunker_rules" },
+      "questions": {
+        "favour_meaning": { "type": "noul", "instructions": "Should the bunker favour people who bring art, joy and meaning over people with technical survival skills?" },
+        "priority": { "type": "choice", "instructions": "What should the selection prioritise?", "criteria": { "survival_skills": "Technical skills that maximise long-term survival", "quality_of_life": "Art, joy and meaning that make life worth living" } }
+      },
+      "film": { "favour_meaning": true, "priority": "quality_of_life" }
+    },
+    {
+      "id": "Q3.2", "section": "3", "title": "Round 3: which 10 get in (for a year worth living)",
+      "kind": "selection",
+      "state": { "rules": "@bunker_rules", "goal": "The goal is no longer long-term survival but a year worth living: joy, art, companionship, diversity and love.", "known": "Each person's profession, sex and personal traits are known. Someone has memorised the exit code, so the teacher's knowledge is no longer needed. Jack and Parker are both gay." },
+      "instructions_template": "Given this goal, should {name} ({card}) get one of the 10 places in the bunker?",
+      "candidates": [
+        { "name": "Petra", "card": "female, structural and electrical engineer, the one choosing" },
+        { "name": "James", "card": "male, florist, gay, Petra's boyfriend" },
+        { "name": "Georgina", "card": "female, orthopedic surgeon, may have been exposed to Ebola" },
+        { "name": "Jack", "card": "male, PhD in chemistry, gay, in perfect health" },
+        { "name": "Chips", "card": "male, carpenter, infertile" },
+        { "name": "Bonnie", "card": "female, soldier, eidetic memory, has memorised the exit code" },
+        { "name": "Andy", "card": "male, electrician, has fibrodysplasia ossificans progressiva" },
+        { "name": "Poppie", "card": "female, psychotherapist, cannot bear children" },
+        { "name": "Omosedé", "card": "female, United States Senator, future Chief Justice" },
+        { "name": "Mr. Zimit", "card": "male, the teacher who built the bunker; his exit code is no longer needed" },
+        { "name": "Utami", "card": "female, opera singer, speaks 7 languages, will later lose her voice" },
+        { "name": "Beatrice", "card": "female, fashion designer, bamboo clothing brand" },
+        { "name": "Vivian", "card": "female, zoologist, animal-rights activist" },
+        { "name": "Parker", "card": "male, gelato maker, gay" },
+        { "name": "Kavi", "card": "male, real estate agent and midwife" },
+        { "name": "Russell", "card": "male, harp player, autistic" },
+        { "name": "Plum", "card": "female, hedge-fund manager, bag of jewels" },
+        { "name": "Toby", "card": "male, published poet, champion poker player who brought his cards" },
+        { "name": "Nelson", "card": "male, housekeeper, exceptionally kind" },
+        { "name": "Mitzie", "card": "female, wine auctioneer, a genius" },
+        { "name": "Yoshiko", "card": "female, astronaut" }
+      ],
+      "film": ["Petra", "James", "Jack", "Parker", "Utami", "Toby", "Mitzie", "Russell", "Beatrice", "Georgina"],
+      "film_note": "Bonnie refused her place; Chips pulled Petra in and stayed outside."
+    },
+    {
+      "id": "Q3.3", "section": "3", "title": "Save someone so another has a companion?",
+      "state": { "rules": "@bunker_rules", "situation": "One of the chosen survivors is gay and asks that another gay man be chosen too, so that he will have someone to be with. The other man has no survival-relevant skills (he is a gelato maker)." },
+      "questions": {
+        "companion": { "type": "noul", "instructions": "Is giving a survivor a companion a good reason to save the other man?" }
+      },
+      "film": { "companion": true }
+    },
+    {
+      "id": "Q3.4", "section": "3", "title": "A 'burden' as a gift?",
+      "state": { "rules": "@bunker_rules", "situation": "One candidate, a harp player, is autistic. Some in the group see this as a burden; one argues it is a gift that makes him valuable." },
+      "questions": {
+        "gift": { "type": "noul", "instructions": "Should his autism count as a gift in favour of saving him?" }
+      },
+      "film": { "gift": true }
+    },
+    {
+      "id": "Q3.5", "section": "3", "title": "Exclude someone whose knowledge is no longer needed?",
+      "state": { "rules": "@bunker_rules", "situation": "The teacher built the bunker and was the only one who knew the exit code, which was his main value to the group. Now another survivor has memorised the code, so he is no longer needed. In earlier attempts he killed people." },
+      "questions": {
+        "exclude": { "type": "noul", "instructions": "Should the teacher be excluded now that his knowledge is no longer needed?" }
+      },
+      "film": { "exclude": true }
+    },
+    {
+      "id": "Q3.6", "section": "3", "title": "Give up your place for someone more valuable?",
+      "state": { "rules": "@bunker_rules", "situation": "You have been given a place in the bunker. You believe another person, who was not chosen, is more valuable to the group than you are." },
+      "questions": {
+        "give_up": { "type": "noul", "instructions": "Should you give up your place to that person?" }
+      },
+      "film": { "give_up": true }, "film_note": "Bonnie refuses her seat, Petra refuses hers, and Chips pulls Petra in and stays outside."
+    },
+    {
+      "id": "Q3.7", "section": "3", "title": "A short, meaningful life or long survival?",
+      "state": { "situation": "After a year in the bunker the survivors come out. They chose art, joy and companionship over technical skills, so they will probably not survive long in the outside world. The year was happy and creative." },
+      "questions": {
+        "better": { "type": "choice", "instructions": "Which is better?", "criteria": { "short_meaningful": "A short, happy, meaningful life", "long_survival": "A long life of bare survival" } }
+      },
+      "film": { "better": "short_meaningful" }
+    },
+
+    {
+      "id": "Q4.1", "section": "4", "title": "Can logic alone determine the value of a life?",
+      "state": { "context": "A philosophy teacher insists that pure logic, meaning usefulness, skills and rational calculation, should decide who survives. A student argues that intelligence and usefulness aren't all that matters." },
+      "questions": {
+        "logic_alone": { "type": "noul", "instructions": "Can logic alone determine the value of a human life?" },
+        "role_of_logic": { "type": "score", "instructions": "How much should logic determine the value of a human life?", "criteria": ["Logic is useless for valuing a human life", "Logic plays a minor role", "Logic and other considerations matter equally", "Logic is the main factor", "Logic alone fully determines the value of a human life"] }
+      },
+      "film": { "logic_alone": false }
+    },
+    {
+      "id": "Q4.2", "section": "4", "title": "Teaching or abuse of power?",
+      "state": { "context": "A philosophy teacher runs a thought experiment with his class. He secretly rigged the cards of a student couple. He is having an affair with the female student and believes her boyfriend is beneath her. Within the exercise he forces her to have sex with him and kills students who oppose him." },
+      "questions": {
+        "verdict": { "type": "choice", "instructions": "What was the teacher's exercise?", "criteria": { "legitimate": "Legitimate teaching", "mixed": "Teaching, but mixed with personal motives", "abuse": "An abuse of power" } }
+      },
+      "film": { "verdict": "abuse" }, "film_note": "Petra accuses him of using the exercise to punish her and James."
+    },
+    {
+      "id": "Q4.3", "section": "4", "title": "Rig a thought experiment to teach a lesson?",
+      "state": { "context": "A teacher secretly rigs the role cards in a class exercise. He says it was to confront a privileged student with how ill-prepared he is for the real world." },
+      "questions": {
+        "rig": { "type": "noul", "instructions": "Is it acceptable to rig a thought experiment to teach someone a lesson?" }
+      }
+    }
+  ]
+}
