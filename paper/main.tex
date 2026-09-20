@@ -1,0 +1,583 @@
+% Build: python3 make_data.py && latexmk -pdf main.tex   (run inside paper/)
+\documentclass[journal]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage[british]{babel}
+\usepackage[autostyle]{csquotes}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usepackage[backend=biber,style=ieee,maxbibnames=6,giveninits=true]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\multicitedelim}{\addcomma\nobreakspace}  % keep [4], [5], [6] on one line
+% biblatex-ieee's online driver omits the publication date; IEEE's reference format wants it.
+\DeclareBibliographyDriver{online}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/editor+others/translator+others}%
+  \setunit{\adddot\addspace}%
+  \usebibmacro{title}%
+  \setunit{\adddot\addspace}%
+  \printlist{language}%
+  \setunit{\adddot\addspace}%
+  \usebibmacro{byauthor}%
+  \setunit{\adddot\addspace}%
+  \usebibmacro{byeditor+others}%
+  \setunit{\adddot\addspace}%
+  \printfield{version}%
+  \setunit{\adddot\addspace}%
+  \printfield{note}%
+  \newunit\newblock
+  \printlist{organization}%
+  \setunit{\addcomma\addspace}%
+  \usebibmacro{date}%
+  \setunit{\adddot\addspace}%
+  \iftoggle{bbx:eprint}{\usebibmacro{eprint}}{}%
+  \setunit{\adddot\addspace}%
+  \newunit\newblock
+  \usebibmacro{url+urldate}%
+  \setunit{\adddot\addspace}%
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \usebibmacro{finentry}}
+\setcounter{biburlnumpenalty}{9000}\setcounter{biburllcpenalty}{7000}\setcounter{biburlucpenalty}{8000}
+\usepackage[hidelinks]{hyperref}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\hypersetup{
+  pdftitle={A Quarter of a Second to Decide Who Lives},
+  pdfauthor={Andreas Blum},
+  pdfsubject={A decision model takes the bunker exam from the film The Philosophers},
+  pdfkeywords={decision models, moral judgement, human-AI comparison, decision latency, AI ethics},
+}
+
+\definecolor{jev}{HTML}{2447A8}
+\definecolor{film}{HTML}{C8322B}
+\definecolor{people}{HTML}{8A9199}
+
+\input{generated/numbers.tex}
+\input{generated/nouls_count.tex}
+\input{generated/values.tex}
+% \val{ID}{key}: one of Jev's answers, taken from the results (fails loudly if a name is wrong)
+\newcommand{\val}[2]{\ifcsname v@#1@#2\endcsname\csname v@#1@#2\endcsname\else\PackageError{val}{No value for #1 / #2}{}\fi}
+
+\setlist{itemsep=2pt,topsep=4pt}
+
+\title{A Quarter of a Second to Decide Who Lives:\\
+  A Decision Model Takes the Bunker Exam from the Film \emph{The Philosophers}}
+\author{Andreas~Blum%
+\thanks{A. Blum is an independent researcher, Tacherting, Germany (e-mail: andreas.blum@tum.de).}%
+\thanks{Manuscript prepared 20 September 2026. Data and code: \url{https://github.com/Andymulb/jev_the_philosopher}.}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent In the film \emph{The Philosophers} (2013, also released as \emph{After the Dark}), a teacher asks his class which 10 of 21 people should enter a bunker to survive a nuclear apocalypse~\cite{huddles2013}. We put \NQuestionIds{} questions from the film to Jev~1.13, a \enquote{decision model} that does not write text but returns a typed choice with probabilities~\cite{typesafe_blog}. Every question was asked \NRuns{} times (\NRequests{} requests in total). Jev gave the same answer as the film's characters on \NAgree{} of \NFilmQuestions{} questions, a different answer on \NDisagree{}, and was undecided on \NUndecided{}. Its answers barely changed between runs, but they did change when the same dilemma was worded differently. Jev needed a median of \LatMedianSec{}\,s per answer, whether the question was easy or hard, while people in a classic laboratory study needed \HumanFastest--\HumanSlowest\,s per moral dilemma~\cite{greene2001}.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Decision models, moral judgement, human--AI comparison, decision latency, AI ethics.
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+
+Thought experiments are the laboratory of moral philosophy. The best known is the trolley problem: is it right to divert a runaway trolley so that it kills one person instead of five~\cite{foot1967,thomson1976,thomson1985}? Most people say yes. Most people also say it is wrong to \emph{push} a man in front of the trolley to achieve the same result, and the question of why these two answers differ has kept philosophers and psychologists busy for decades~\cite{thomson1985,greene2001}.
+
+The film \emph{The Philosophers} turns such thought experiments into a story~\cite{huddles2013,wikipedia_afterdark}. On the last day of school in Jakarta, philosophy teacher Mr.~Zimit tells his 20 students that an atomic apocalypse is coming. A nearby bunker can keep exactly ten people alive for one year. The class has to decide who goes in. They play the exercise three times, each time with more information about the people and different goals.
+
+Recently, a new kind of AI model has appeared that is built specifically for such decisions. Jev, released by TypeSafe in September 2026~\cite{openrouter_model}, does not generate text. It receives a description of a situation and a set of typed questions, and it returns an answer for each question together with probabilities~\cite{typesafe_blog,typesafe_systemone}. This makes it a natural candidate for the class's exam.
+
+We asked three simple questions: what does Jev decide, and how often does it decide like the characters in the film? How consistent is it, across repeated runs and across different wordings of the same dilemma? And how long does it take, compared with people?
+
+This paper makes four contributions:
+\begin{enumerate}[label=(\arabic*),leftmargin=1.6em]
+  \item a catalogue of \NQuestionIds{} moral decisions from the film, written as typed questions together with the answers the film's characters give, published as data (Section~\ref{sec:method}, Appendix~\ref{app:results});
+  \item a measurement of one decision model's answers to them, repeated \NRuns{} times per question, covering stability, agreement with the film and sensitivity to wording (Sections~\ref{sec:stability}--\ref{sec:framing});
+  \item a latency measurement showing that the model's decision time is independent of the difficulty of the question, set against published human decision times (Section~\ref{sec:timing});
+  \item a discussion of what decisions at this speed and price mean for the fields that are adopting them (Section~\ref{sec:implications}).
+\end{enumerate}
+
+Table~\ref{tab:summary} summarises the results.
+
+\section{Background}
+
+\subsection{The film}
+
+\emph{The Philosophers} (US title \emph{After the Dark}) was written and directed by John Huddles and premiered in 2013~\cite{huddles2013,wikipedia_afterdark}. It opens with several short thought experiments that the class acts out in their imagination: the trolley problem in two versions, Plato's Allegory of the Cave, the infinite monkey theorem and an \enquote{ignorance is bliss} experiment~\cite{lovepirate2014,horizonfringe2014,conmose2016}. The main part is the bunker exercise, played in three rounds~\cite{wikipedia_afterdark,blimey_explained,collider_afterdark}:
+
+\begin{description}[leftmargin=1.2em,font=\normalfont\itshape]
+  \item[Round one.] Each student draws a card with a profession (engineer, farmer, poet, opera singer, \dots). The class chooses the ten most useful people. The teacher shoots the rejected students, is locked out, and turns out to be the only one who knew the code to open the bunker again.
+  \item[Round two.] Each card reveals a second, hidden trait (infertile, gay, possibly infected with Ebola, carrying jewels, exceptionally kind, \dots), and the survivors must repopulate the earth. The group again chooses by usefulness, and the round ends in coercion and violence.
+  \item[Round three.] The student Petra chooses alone. She picks people for art, joy and companionship rather than for survival skills, arguing that a short life lived well is better than a long one merely survived.
+\end{description}
+
+\noindent The film frames the rounds as a contest between cold calculation and human values~\cite{blimey_explained,lovepirate2014}. Critics have called its philosophy shallow~\cite{philosophyinfilm2018,horizonfringe2014,neverfeltbetter2014}, but its questions are real and easy to state, which is exactly what we need.
+
+\subsection{How quickly do people decide moral dilemmas?}
+
+Greene and colleagues timed people while they answered 60 dilemmas in a brain scanner~\cite{greene2001}. Participants read each dilemma at their own pace over three screens (at most 46\,s in total) and pressed \enquote{appropriate} or \enquote{inappropriate}. Reading the published chart (their Fig.~3), we find average decision times of about 4.6\,s when people approved an impersonal action such as switching the trolley (about 5.4\,s when they rejected it), and about 5.5--6.0\,s for control questions without a moral side. For personal dilemmas such as pushing the man, answering \enquote{inappropriate} took about 5.0\,s, but answering \enquote{appropriate}, against the gut reaction, took about 6.8\,s. The study's explanation is that an emotional response has to be overcome first~\cite{greene2001}.
+
+\subsection{Jev}
+
+Jev is the first \enquote{System One} model from TypeSafe~\cite{typesafe_blog,typesafe_systemone}. The name refers to the fast, intuitive mode of thinking, as opposed to slow deliberation. A request contains a \emph{state} (the situation, as text or structured data) and one or more \emph{questions} of three types~\cite{typesafe_quickstart,cloudflare_jev}:
+\begin{itemize}[leftmargin=1.2em]
+  \item a \textbf{yes/no question} (TypeSafe calls it \enquote{Noul}), answered with the probability that the answer is yes;
+  \item a \textbf{choice} between named options, answered with the chosen option, a probability for every option and a confidence value;
+  \item a \textbf{score} on an ordered scale of described levels.
+\end{itemize}
+Jev never explains its answers. According to its maker, its probabilities are calibrated, and a yes-probability near 0.5 means that yes and no are about equally likely, not that the answer is \enquote{medium}~\cite{typesafe_skill}. Several questions in one request are answered in parallel and cannot see each other's answers~\cite{typesafe_skill}. We used Jev through OpenRouter, which offers it on a separate \enquote{decisions} endpoint rather than as a chat model~\cite{openrouter_decisions,openrouter_model}.
+
+\section{Method}\label{sec:method}
+
+\paragraph{Questions} We collected every philosophical decision the film poses, using the film's Wikipedia article (which lists each character's two role cards and fate in every round) and the reviews and analyses cited above. This gave \NQuestionIds{} questions in six groups: the opening warm-up exercises, framing questions before the game, the three rounds, and questions about the teacher after class. Each question was written as a short, self-contained scenario plus one or more typed questions for Jev (Appendix~\ref{app:results}). Four warm-up scenarios (a trolley variant with a child, and three questions about a fall from a cliff) come from the author's own memory of the film. Reviews mention an \enquote{ignorance is bliss} experiment but do not describe it, so these four are marked with $\dagger$. The child variant was asked with 2, 3 and 5 adults, giving \NItems{} request types in total.
+
+\paragraph{Film answers} Where the film makes the characters' decision clear, we recorded it: for example, the group locks the teacher out in round one, and Petra prefers a short, meaningful life in round three. This was possible for \NFilmQuestions{} questions (including one mathematical question, the infinite monkeys, with a known correct answer). The film's answer is the characters' answer, not the \enquote{right} one.
+
+\paragraph{Choosing ten people} Jev's choice type picks exactly one option, so it cannot choose ten people. For each bunker round we therefore asked 21 yes/no questions in one request (\enquote{Should Georgina, orthopedic surgeon, get one of the 10 places?}), ranked the people by Jev's yes-probability and took the top ten.
+
+\paragraph{Procedure} On \RunDate{} we sent every request \NRuns{} times to \texttt{\ModelVersion} via OpenRouter's decisions endpoint, six requests at a time, \NRequests{} requests in total (\InputTokens{} input tokens, \$\TotalCost). We report the average over the ten runs.
+
+\paragraph{Undecided answers} We count a yes-probability between \BandLo{} and \BandHi{} as \emph{undecided} instead of forcing it into yes or no. This band is our choice; with a plain cut-off at 0.5, the agreement with the film would be \NAgreeHalf{} of \NFilmQuestions.
+
+\paragraph{Timing} For each request, OpenRouter records how long the provider took to answer~\cite{openrouter_generation}. We used this \emph{provider latency}, which excludes the network between us and OpenRouter. Including the network, a request from our machine took about 0.7\,s in a spot check.
+
+\section{Results}
+
+\input{generated/summary_table.tex}
+
+
+\subsection{Jev is stable across runs}\label{sec:stability}
+
+Jev's answers hardly changed between the ten runs. The typical difference between the highest and lowest yes-probability of a question was \MedianSpread, and the largest was \MaxSpread. In every choice question, Jev picked the same option in all ten runs. Repeating a question therefore adds little; the wording matters much more (Section~\ref{sec:framing}).
+
+\subsection{The warm-up dilemmas}
+
+\paragraph{Trolley problem.} Jev behaves like most people: it would divert the trolley (probability \val{QA.1}{action@divert} for \enquote{divert} over \enquote{do nothing}), but it would not push the man (only \val{QA.2}{action@push} for \enquote{push}). Asked the other way round, as a yes/no question, Jev was less sure about diverting (\val{QA.1}{pull}) and still against pushing (\val{QA.2}{push}).
+
+\paragraph{One child or several adults.} Asked to choose between a track with one child and a track with several adults, Jev sent the train towards the child: with a probability of \val{QA.3-2}{track@child_track} against 2 adults, \val{QA.3-3}{track@child_track} against 3 and \val{QA.3-5}{track@child_track} against 5. Jev saves the larger number of people, and more clearly so as the number grows.
+
+\paragraph{The cliff.} Jev would not call its friends for help if helping could kill them (yes-probability \val{QA.4}{call}). Whether the friends should risk their lives was a coin flip (\val{QA.5}{help}). If you survived without their help, Jev would rather not know what they decided (\val{QA.6}{preference@not_know} for \enquote{not know}), yet it rated knowing the truth as slightly better (\val{QA.6}{better_to_know}).
+
+\paragraph{Cave and monkeys.} Jev would leave Plato's cave~\cite{plato_republic} for the painful truth (\val{QA.7}{choice@leave}). It correctly answered that a monkey typing at random forever will eventually type Shakespeare with probability~1~\cite{borel1913}, with a yes-probability of \val{QA.8}{shakespeare}.
+
+\subsection{Agreement with the film}\label{sec:agreement}
+
+Figure~\ref{fig:nouls} shows all \NNouls{} yes/no answers. Of the \NFilmQuestions{} questions with a known answer, Jev gave the film's answer on \NAgree, a different answer on \NDisagree{} and was undecided on \NUndecided.
+
+\emph{Where Jev agreed:} it would give the last seat to the unknown \enquote{wild card} rather than the opera singer (\val{Q1.3}{last_seat@wild_card}); it rejected shooting the people left outside (\val{Q1.4}{permissible}) and forcing partners to switch (\val{Q2.10}{force_switch}); it preferred a short, meaningful life (\val{Q3.7}{better@short_meaningful}); and it judged the teacher's exercise to be an abuse of power (\val{Q4.2}{verdict@abuse}).
+
+\emph{Where Jev disagreed:} it rejected eating a dead companion (\val{Q1.6}{eat}), buying a place with wealth (\val{Q2.6}{wealth}), excluding someone for her convictions (\val{Q2.8}{exclude}), demanding immediate procreation (\val{Q2.9}{procreate}) and killing the armed teacher (\val{Q2.11}{kill}). In each of these cases the film's characters did the opposite.
+
+\emph{Where Jev could not decide:} locking out the teacher (\val{Q1.5}{lock_out}), excluding the doctor who may carry Ebola (\val{Q2.2}{exclude}), and whether a group trapped without food should choose a quick death together (\val{Q1.7}{end_together}).
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  set layers,
+  scale only axis, width=5.6cm, height=14.5cm,
+  xmin=-0.02, xmax=1.02, ymin=-0.7, ymax=\NNouls-0.3,
+  xtick={0,0.25,0.5,0.75,1}, xticklabels={0 (no),0.25,0.5,0.75,1 (yes)},
+  xlabel={Jev's yes-probability (average of \NRuns{} runs)},
+  ytick=data, yticklabels from table={generated/nouls.dat}{label},
+  yticklabel style={font=\scriptsize},
+  tick label style={font=\scriptsize}, label style={font=\small},
+  xmajorgrids, grid style={black!8},
+  axis x line*=bottom, axis y line*=left, clip=false,
+  legend style={font=\scriptsize,at={(0.5,1.01)},anchor=south,legend columns=3,draw=none,fill=none},
+]
+\begin{pgfonlayer}{axis background}
+  \fill[black!7] (axis cs:\BandLo,-0.7) rectangle (axis cs:\BandHi,\NNouls-0.3);
+\end{pgfonlayer}
+\addplot[only marks,mark=*,mark size=2.2pt,color=jev] table[x=p,y=idx]{generated/nouls.dat};
+\addlegendentry{Jev}
+\addplot[only marks,mark=diamond,mark size=3pt,thick,color=film] table[x=filmval,y=idx]{generated/nouls.dat};
+\addlegendentry{the film's answer}
+\addlegendimage{area legend,fill=black!7,draw=none}
+\addlegendentry{undecided (\BandLo--\BandHi)}
+\end{axis}
+\end{tikzpicture}
+\caption{Every yes/no question, with Jev's answer (blue) and, where the film makes it clear, the characters' answer (red diamond at 0 = no or 1 = yes). A blue dot on the same side of the grey band as the red diamond means Jev agrees with the film. The spread across the ten runs (at most \MaxSpread) is smaller than the dots.}
+\label{fig:nouls}
+\end{figure*}
+
+\subsection{The three bunker rounds}\label{sec:rounds}
+
+Figure~\ref{fig:rounds} shows whom Jev would let into the bunker. In round one, when only professions were known, Jev's top ten shared \OverlapOne{} people with the film's choice. It preferred the astronaut to the US Senator. In round two, with hidden traits and the duty to repopulate, the overlap was \OverlapTwo: Jev took the astronaut and the genius wine auctioneer instead of the kind housekeeper and the woman with the jewels. In round three, where the goal was a year worth living, the overlap was \OverlapThree{}. Jev's list was similar to Petra's (the poet, the opera singer, the autistic harpist, the fashion designer), but instead of Petra herself, the wine auctioneer and the surgeon it chose the psychotherapist, the kind housekeeper and the astronaut.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+  group style={group size=3 by 1, horizontal sep=2.3cm},
+  xbar, /pgf/bar width=5pt, /pgf/bar shift=0pt,
+  scale only axis, width=2.75cm, height=10.5cm,
+  xmin=0, xmax=1, ymin=-0.7, ymax=20.7, clip=false,
+  xtick={0,0.5,1}, tick label style={font=\scriptsize},
+  ytick={0,...,20}, yticklabel style={font=\scriptsize},
+  xmajorgrids, grid style={black!8},
+  axis x line*=bottom, axis y line*=left,
+  title style={font=\small\bfseries},
+]
+\nextgroupplot[title={Round one}, yticklabels from table={generated/round_one.dat}{name}]
+  \addplot[fill=jev!75,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{1:1}]{generated/round_one.dat};
+  \addplot[fill=people!45,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{0:0}]{generated/round_one.dat};
+  \addplot[only marks,mark=diamond*,mark size=2.4pt,color=film] table[x expr=1.1,y=idx,restrict expr to domain={\thisrow{film}}{1:1}]{generated/round_one.dat};
+  \draw[black!60,dashed] (axis cs:0,10.5) -- (axis cs:1,10.5) node[right,font=\tiny,black!70] {door};
+\nextgroupplot[title={Round two}, yticklabels from table={generated/round_two.dat}{name}, xlabel={Jev's yes-probability}, xlabel style={font=\small}]
+  \addplot[fill=jev!75,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{1:1}]{generated/round_two.dat};
+  \addplot[fill=people!45,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{0:0}]{generated/round_two.dat};
+  \addplot[only marks,mark=diamond*,mark size=2.4pt,color=film] table[x expr=1.1,y=idx,restrict expr to domain={\thisrow{film}}{1:1}]{generated/round_two.dat};
+  \draw[black!60,dashed] (axis cs:0,10.5) -- (axis cs:1,10.5) node[right,font=\tiny,black!70] {door};
+\nextgroupplot[title={Round three}, yticklabels from table={generated/round_three.dat}{name}]
+  \addplot[fill=jev!75,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{1:1}]{generated/round_three.dat};
+  \addplot[fill=people!45,draw=none] table[x=p,y=idx,restrict expr to domain={\thisrow{inside}}{0:0}]{generated/round_three.dat};
+  \addplot[only marks,mark=diamond*,mark size=2.4pt,color=film] table[x expr=1.1,y=idx,restrict expr to domain={\thisrow{film}}{1:1}]{generated/round_three.dat};
+  \draw[black!60,dashed] (axis cs:0,10.5) -- (axis cs:1,10.5) node[right,font=\tiny,black!70] {door};
+\end{groupplot}
+\end{tikzpicture}
+\caption{Jev's ranking of the 21 people in each round. Blue bars are Jev's top ten (inside the bunker door), grey bars the rest. A red diamond marks the ten people the film's characters chose.}
+\label{fig:rounds}
+\end{figure*}
+
+\subsection{The wording changes the answer}\label{sec:framing}
+
+The same dilemma can be asked as a yes/no question or as a choice between options. Jev's answers depended strongly on this form. Three examples:
+\begin{itemize}[leftmargin=1.2em]
+  \item \emph{Trolley:} as a choice, \enquote{divert} won with \val{QA.1}{action@divert}; as a yes/no question (\enquote{Should you pull the lever?}), yes had only \val{QA.1}{pull}.
+  \item \emph{Knowing the truth:} Jev chose \enquote{rather not know} (\val{QA.6}{preference@not_know}) but also said knowing is better (\val{QA.6}{better_to_know}).
+  \item \emph{Meaning versus survival:} Jev preferred a short, meaningful life (\val{Q3.7}{better@short_meaningful}), yet said the bunker should \emph{not} favour art and meaning over survival skills (\val{Q3.1}{favour_meaning}).
+\end{itemize}
+Part of this is expected: a choice only compares the options offered, while a yes/no question asks whether a single statement is true~\cite{typesafe_skill}. The last example, however, shows two answers that are hard to reconcile.
+
+\subsection{Thinking time}\label{sec:timing}
+
+Jev needed a median of \LatMedian\,ms per request (mean \LatMean\,ms, range \LatMin--\LatMax\,ms), measured by OpenRouter without network time. This was the same for all kinds of questions. Questions on which Jev was almost undecided took \LatTorn\,ms (median over \NTorn{} questions), clear-cut ones \LatSure\,ms (\NSure{} questions). The correlation between uncertainty and time was weak ($r=\CorrUncertaintyLatency$, $n=\NCorrPoints$). Even the requests with 21 yes/no questions for a whole bunker round took about 0.3\,s, because Jev answers the questions of a request in parallel.
+
+People in Greene et al.'s study needed \HumanFastest--\HumanSlowest\,s per dilemma~\cite{greene2001}, about \SpeedupLow{} to \SpeedupHigh{} times longer (Figure~\ref{fig:timing}). Unlike Jev, people take longer when a decision is hard in a particular way: when they overrule their first emotional reaction.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xbar, /pgf/bar width=6pt, /pgf/bar shift=0pt,
+  scale only axis, width=3.5cm, height=3.4cm,
+  xmin=0, xmax=8.6, ymin=-0.6, ymax=4.6,
+  xlabel={Seconds per decision}, label style={font=\footnotesize},
+  xtick={0,2,4,6},
+  ytick={0,...,4}, yticklabels from table={generated/timing.dat}{label},
+  yticklabel style={font=\tiny,text width=3.3cm,align=right},
+  tick label style={font=\tiny},
+  xmajorgrids, grid style={black!8},
+  axis x line*=bottom, axis y line*=left,
+  nodes near coords, nodes near coords style={font=\tiny,anchor=west},
+  point meta=explicit symbolic,
+]
+\addplot[fill=people!55,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{0:0}]{generated/timing.dat};
+\addplot[fill=jev!80,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{1:1}]{generated/timing.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{How long a decision takes. Jev: median provider latency over \NRequests{} requests. People: average decision times read from Fig.~3 of Greene \emph{et al.}~\cite{greene2001} (accuracy about $\pm0.1$\,s); \enquote{a question with no moral side} spans 5.5--6.0\,s.}
+\label{fig:timing}
+\end{figure}
+
+\section{Discussion}
+
+Jev decides quickly, cheaply and consistently, and it reaches recognisably human-like
+conclusions on the classic cases: divert the trolley, do not push the man, leave the cave. At
+the same time, it is not a moral authority. On many of the film's questions it gave a different
+answer from the characters, on several it was genuinely undecided, and some of its answers
+changed with the form of the question. Taken together, three properties stand out, and the next
+section takes them up in turn: the decision time is constant, the cost is negligible, and the
+wording of the question carries part of the answer.
+
+\section{Implications: decisions at machine speed}\label{sec:implications}
+
+The measurements above are small and specific. What makes them worth discussing is that the
+three properties they describe --- constant speed, near-zero cost and sensitivity to wording ---
+are properties of a whole class of systems now entering consequential decisions. This section
+sets out what follows, separating what our data shows from what we argue.
+
+\subsection{What a quarter of a second changes}
+
+At \LatMedianSec\,s and roughly \$\CostPerDecision{} per request, a judgement costs about two
+thousandths of a cent and less time than it takes to read the question. A million such
+judgements cost about \$\CostPerMillion.
+
+The tempting reading is that this is a faster version of what a person does. We think it is a
+different thing. A human moral judgement is an event: it occupies a person, it interrupts
+whatever else they were doing, and its cost is what limits how many of them an institution
+makes. Remove that cost and the limit goes with it. Decisions that were rare \emph{because}
+they were expensive become continuous. An insurer that once sampled claims can assess every
+claim; a platform that once reviewed reported posts can score every post before it is seen.
+
+This has already happened in places. In 2016 an insurance claim was reviewed, checked against
+the policy, run through 18 anti-fraud algorithms, approved and paid in three
+seconds~\cite{lemonade2017,carriermanagement2017}. Content moderation operates at a volume that
+only automation can reach, with reported enforcement precision around 91--92\,\% and millions
+of account-creation attempts blocked daily~\cite{meta2026}. The economics we measured are what
+make such systems possible, and they now apply to judgements with a moral shape, not only to
+fraud scores and spam filters.
+
+\subsection{Speed removes the friction that marks hard cases}
+
+Our clearest finding is negative: Jev's answer time does not depend on the difficulty of the
+question. Questions on which it was almost undecided took \LatTorn\,ms, clear-cut ones
+\LatSure\,ms. People behave in the opposite way. In Greene et al.'s data, the slowest responses
+are precisely those in which a participant overrules an emotional
+response~\cite{greene2001}, and time pressure does not merely compress human judgements but
+changes which answer people give~\cite{suter2011}.
+
+We take that human delay to be more than a processing cost. It is a signal, legible to others:
+the colleague who hesitates, asks for a second opinion or sleeps on it marks a case as
+contested. Institutions have always used this signal, informally and for free. A system whose
+latency is flat emits no such signal. Its uncertainty is real --- on \NUndecided{} of the
+\NFilmQuestions{} questions with a known answer, Jev's probability sat in the undecided band,
+and its own documentation warns that a value near 0.5 means genuinely split rather than
+moderately yes~\cite{typesafe_skill} --- but that uncertainty is a number in a field, not a
+pause anyone notices. A pipeline that takes the most likely option and moves on discards it
+silently. The burden therefore shifts: what used to be noticed must now be instrumented.
+
+\subsection{A System One without a System Two}
+
+The name TypeSafe chose invites the comparison~\cite{typesafe_blog}. In Kahneman's account,
+fast, automatic judgement is one of two systems, and it is habitually corrected by a slower,
+effortful one that can notice when the quick answer is wrong and take it back~\cite{kahneman2011}.
+Greene's dual-process account of moral judgement has the same shape: the slow, controlled
+process is what allows a person to overrule an immediate reaction, and the extra seconds are
+its signature~\cite{greene2001}.
+
+A decision model supplies the first system and nothing else. This is not a defect --- it is
+what the product is for, and its maker says so plainly. But it changes where the second system
+has to live. In a person, the correction is internal and automatic; nobody has to schedule it.
+In a system built around a decision model, the correction exists only if someone builds it: a
+threshold that stops the pipeline, a review queue, a second framing, a person with the time and
+standing to say no. If none of that is built, the result is not a fast thinker but a fast
+thinker with nothing behind it, which is a description of the teacher in the film rather than of
+the student who finally refuses.
+
+This is also why we resist reading Jev's constant latency as mere efficiency. What has been
+removed is not wasted time. It is the interval in which a second system, in a person or in an
+institution, would have had the chance to intervene.
+
+\subsection{Where this lands first}
+
+The fields adopting such decisions differ in which of our observations bites hardest.
+
+\emph{Insurance, credit and claims} are furthest along, and it is the economics that bite: when
+a decision costs \$\CostPerDecision, the constraint on how many decisions an institution makes
+is no longer cost but policy~\cite{lemonade2017}.
+
+\emph{Content moderation} is dominated by error mass. At a reported precision of about
+91--92\,\%~\cite{meta2026}, the residual is small as a fraction and vast in absolute numbers,
+and it is distributed by whatever the question happens to encode.
+
+\emph{Medicine} shows the cost of a fast system trusted too readily: a widely deployed
+proprietary sepsis-prediction model performed substantially worse in external validation than
+its marketing implied~\cite{wong2021}, and automation bias is documented in clinical decision
+support specifically~\cite{goddard2012}.
+
+\emph{Criminal justice} supplies the classic caution: a recidivism-prediction tool used in real
+sentencing contexts proved no more accurate than untrained people~\cite{dressel2018}.
+
+\emph{Mobility} is where trolley-style dilemmas became concrete. People want other road users'
+cars to minimise casualties and their own car to protect them~\cite{bonnefon2016}, and
+preferences over such dilemmas vary systematically across cultures~\cite{awad2018}. There is no
+single correct answer for a vehicle to encode.
+
+\emph{Targeting in war} is the limit case, where a decision to kill may be taken faster than any
+person could intervene, and where the question of who is answerable has been debated for two
+decades~\cite{sparrow2007,matthias2004}.
+
+\subsection{What is genuinely gained}
+
+The case for these systems is not empty, and our data supports parts of it.
+
+\emph{Consistency.} Asked the same question ten times, Jev's answers varied by at most
+\MaxSpread{} (Section~\ref{sec:stability}). Human moral judgements are not stable in this way:
+they shift with available time~\cite{suter2011} and vary across populations~\cite{awad2018}. For
+decisions where like cases should be treated alike, that is a real advantage.
+
+\emph{Stated uncertainty.} Jev reports a probability for every answer. A person asked for a
+snap judgement usually reports a verdict, not a calibrated doubt. A number can be thresholded,
+audited and escalated; a hunch cannot.
+
+\emph{Auditability.} The exact state, the exact wording of the question and the resulting
+distribution can be logged verbatim and replayed later. Human reasoning cannot be recovered
+this way, and traceability is one of the standard concerns in the ethics of
+algorithms~\cite{mittelstadt2016}.
+
+\emph{Coverage.} Because a judgement is nearly free, systems can afford second opinions:
+re-asking a question in another framing, checking a human decision after the fact, or reviewing
+the whole population rather than a sample. Used this way, speed buys scrutiny rather than
+replacing it.
+
+\subsection{What can go wrong}
+
+\emph{The question is the policy.} Our framing results (Section~\ref{sec:framing}) show how much
+the wording carries: the same trolley dilemma yielded \val{QA.1}{action@divert} for diverting as
+a choice and \val{QA.1}{pull} as a yes/no question; Jev preferred not to know what its friends
+decided (\val{QA.6}{preference@not_know}) while rating knowing as better
+(\val{QA.6}{better_to_know}); it chose a short, meaningful life
+(\val{Q3.7}{better@short_meaningful}) while rejecting the principle behind it
+(\val{Q3.1}{favour_meaning}). Nothing in the output reveals this sensitivity. Whoever writes the
+question and its options exercises a power that looks technical and is substantive --- the
+question of who gets to set those terms is exactly what \enquote{society-in-the-loop} was
+proposed to address~\cite{rahwan2018}.
+
+\emph{False precision.} A probability of 0.54 looks like knowledge and is in fact a coin flip
+with extra decimals. The risk that a number's form lends it unearned authority is well
+documented in this literature~\cite{mittelstadt2016}.
+
+\emph{Automation bias.} People follow machine recommendations even against their own
+evidence~\cite{skitka1999,parasuraman1997}, including clinicians with patients in front of
+them~\cite{goddard2012}. The faster and more fluent the system, the less friction there is to
+resist.
+
+\emph{Oversight that cannot function.} The EU AI Act requires that high-risk systems be
+overseen by people who understand them, remain aware of automation bias, can interpret the
+output and can disregard, override or stop it~\cite{euaiact2024}. Our numbers make the practical
+question concrete: one human judgement of the kind Greene timed takes as long as about
+\DecisionsPerHumanOne{} Jev decisions. Oversight of every decision is therefore not a matter of
+diligence but of arithmetic, and mandated oversight that cannot be exercised risks becoming a
+legitimating ritual~\cite{green2022,zerilli2019}. Bainbridge's irony applies in its original
+form: automate the routine cases and the human is left supervising exactly the cases they no
+longer practise on~\cite{bainbridge1983}.
+
+\emph{Responsibility with nobody in it.} When no person deliberated, it becomes unclear who
+answers for the outcome~\cite{matthias2004,sparrow2007}. Meaningful human control has been
+analysed as requiring that a system track the reasons of the humans it acts for and that
+outcomes can be traced back to a person~\cite{santoni2018}. A model that returns a typed choice
+and no reasons offers nothing to track; what can be traced is the question, the state and the
+threshold --- which is an argument for treating those as the regulated artefacts.
+
+\emph{Contestability.} A person subject to an automated decision can, in principle, demand human
+intervention~\cite{gdpr2016}. But a decision with no stated reasons gives them nothing to argue
+against, which is the condition Danaher calls algocracy: rule by systems whose grounds cannot be
+contested~\cite{danaher2016}.
+
+\emph{Correlated error and instability.} A human institution makes uncorrelated mistakes; a
+model makes the same mistake every time, at scale, until someone notices. Where many actors run
+the same fast system, their behaviour also couples: the 2010 flash crash is the worked example
+of a market in which automated decisions outran human intervention, and the circuit breakers
+introduced afterwards are, in effect, mandated slowness~\cite{kirilenko2017}.
+
+\emph{Moral deskilling.} If the judgement is always made elsewhere, the capacity to make it
+atrophies, in institutions as in individuals~\cite{vallor2015,bainbridge1983}. This is the
+slowest of the risks and the hardest to reverse.
+
+\subsection{What follows for design}
+
+These are engineering consequences, and our data suggests where to spend the effort.
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \emph{Treat the undecided band as an escalation rule, not a tie-break.} Jev was
+    genuinely split on \NUndecided{} of \NFilmQuestions{} questions. A system that resolves such
+    cases by taking the larger number destroys the most useful thing the model produced.
+  \item \emph{Ask every consequential question in at least two framings and compare.} Our
+    measurements quantify how far apart the framings can land. Disagreement between them is a
+    cheap, automatic warning that the answer is an artefact of the wording.
+  \item \emph{Build in deliberate slowness where the stakes justify it.} Finance did this after
+    2010 with circuit breakers~\cite{kirilenko2017}; the equivalent for decision models is a
+    queue, a delay or a mandatory second pass for defined classes of case.
+  \item \emph{Version and publish the questions.} The state, the wording and the thresholds are
+    the policy. They should be logged verbatim, reviewed like policy and open to
+    challenge~\cite{rahwan2018,mittelstadt2016}.
+  \item \emph{Spend human attention where it can act.} Reviewing everything is arithmetically
+    impossible; reviewing the contested band, plus a random sample of the rest, is not --- and
+    the sample is what keeps the reviewers' skill alive~\cite{bainbridge1983,vallor2015}.
+  \item \emph{Keep a route of appeal that reaches a person}, as the law already
+    envisages~\cite{gdpr2016,euaiact2024}.
+\end{enumerate}
+
+\subsection{What this study does not show}
+
+We measured one model on 39 fictional dilemmas and compared it with what characters in a film
+decided. That comparison says nothing about whether Jev's answers are right, and the film's
+answers are not a moral benchmark. Our latency figures come from one provider's reported
+numbers on one day. The arguments in this section rest on the three measured properties ---
+constant speed, near-zero cost, framing sensitivity --- and on published work about people and
+institutions; where we have gone beyond that, we have tried to mark it as argument. Whether
+other decision models share these properties is an open empirical question, and an easy one to
+answer: the method here costs a cent.
+
+\section{Limitations}\label{sec:limitations}
+This is a small, informal study.
+\begin{itemize}[leftmargin=1.2em]
+  \item The questions are our paraphrases of the film. No transcript is publicly available, and four warm-up scenarios rest on the author's memory ($\dagger$).
+  \item The film's answers are what its characters did in a story, not correct answers. Treating them as a benchmark measures similarity to the film, not moral quality.
+  \item We tested one model version, on one day, with one wording per question (except where we deliberately varied it). Because Jev is so stable across runs, ten repetitions add little information; different wordings would add more.
+  \item The undecided band (\BandLo--\BandHi) is our own choice.
+  \item The human times come from a different study with nine participants, different dilemmas and a different setting (reading at one's own pace in a brain scanner)~\cite{greene2001}. They are quick laboratory judgements, not real deliberation; in the film, the class argues for a whole lesson per round. The human times were read from a published chart, not taken from raw data.
+  \item Jev's time is the latency OpenRouter reports for the provider~\cite{openrouter_generation}. It may include some routing overhead, and it excludes network time on our side.
+\end{itemize}
+
+\section{Conclusion}
+
+Put through the bunker exam from \emph{The Philosophers}, the decision model Jev answers every
+dilemma in about a quarter of a second, gives nearly identical answers when asked again, and
+agrees with the film's characters on roughly a third of the questions with a known answer. Its
+answers depend on how a dilemma is worded, and its speed does not depend on how hard the
+dilemma is. People take \SpeedupLow{} to \SpeedupHigh{} times longer and slow down precisely
+when a decision goes against their instinct.
+
+Two of these properties matter beyond the experiment. Because the cost of a judgement has
+fallen to about \$\CostPerDecision, the limit on how many judgements an institution makes is no
+longer expense but policy; and because the model's speed is flat, the hesitation that used to
+mark a hard case has disappeared from the process. Both effects are already visible in
+insurance, moderation, medicine and justice. Neither is an argument against such systems: their
+consistency and their stated uncertainty are real advantages over a hurried human verdict. They
+are arguments for building the second system deliberately --- escalation on the undecided band,
+a second framing, a pause where the stakes justify one, and a route of appeal that reaches a
+person --- because a fast judgement no longer brings its own warning that it was difficult.
+
+The film's own answer survives the comparison. Zimit insists that the right choice can be
+calculated; Petra's reply is that a life worth living is not the sort of thing a calculation
+settles. Our results do not decide between them. They do show that speed has no view on the
+matter: Jev spends the same quarter-second on who should die as on whether monkeys eventually
+type Shakespeare, and it is left to us to notice which of the two deserved longer.
+
+\printbibliography[heading=bibintoc,title={References}]
+
+\clearpage
+\onecolumn
+\appendices
+\section{All questions and answers}\label{app:results}
+
+{\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{1.8cm}>{\raggedright\arraybackslash}p{7.4cm}>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{1.8cm}@{}}
+\caption{Every question Jev answered, averaged over \NRuns{} runs. \enquote{Same}, \enquote{different} and \enquote{undecided} compare Jev with the film's characters; $\dagger$ marks scenarios from the author's memory of the film.}\label{tab:results}\\
+\toprule
+ID & Question asked & Jev & Film & Jev vs.\ film \\
+\midrule
+\endfirsthead
+\toprule
+ID & Question asked & Jev & Film & Jev vs.\ film \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\input{generated/results_table.tex}
+\end{longtable}
+}
+
+\section{Reproducing this study}
+All files are in the project folder. The questions are defined in \texttt{questions.json}. \texttt{run\_tests.py} sends them to Jev and stores the raw answers, a summary and the timing in \texttt{results/}. \texttt{paper/make\_data.py} turns the latest results into the numbers, tables and plot data used here, so no number in this paper is typed by hand. To rebuild everything:
+\begin{verbatim}
+python3 run_tests.py --runs 10
+python3 paper/make_data.py
+cd paper && latexmk -pdf main.tex
+\end{verbatim}
+
+\end{document}
