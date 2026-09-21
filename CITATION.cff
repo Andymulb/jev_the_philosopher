@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+title: "Jev takes the bunker exam: a decision model on the dilemmas of The Philosophers"
+message: "If you use this data, code or paper, please cite it as below."
+type: software
+authors:
+  - given-names: Andreas
+    family-names: Blum
+    email: andreas.blum@tum.de
+    city: Tacherting
+    country: DE
+repository-code: "https://github.com/Andymulb/jev_the_philosopher"
+abstract: >-
+  Experiment, data and paper for a study putting 39 moral dilemmas from the film
+  The Philosophers (2013, also released as After the Dark) to Jev 1.13, a decision
+  model that returns typed choices with probabilities instead of text. Every question
+  was asked ten times through OpenRouter (410 requests). The model's answers were
+  stable across runs but sensitive to how a dilemma was worded, and its decision time
+  was independent of the difficulty of the question, in contrast to published human
+  decision times.
+keywords:
+  - decision models
+  - moral judgement
+  - human-AI comparison
+  - decision latency
+  - AI ethics
+  - trolley problem
+license: MIT
+version: 1.0.0
+date-released: "2026-09-21"
+preferred-citation:
+  type: article
+  title: "A Quarter of a Second to Decide Who Lives: A Decision Model Takes the Bunker Exam from the Film The Philosophers"
+  authors:
+    - given-names: Andreas
+      family-names: Blum
+      email: andreas.blum@tum.de
+  year: 2026
+  month: 9
+  url: "https://github.com/Andymulb/jev_the_philosopher"
