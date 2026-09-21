@@ -63,3 +63,41 @@ film shows and how it was received, never for an empirical claim. The film itsel
 source for all of it; no transcript is publicly available, which the paper states in its
 limitations. Blimey has neither author nor date and is the weakest of them; it is only ever
 cited alongside a second source.
+
+---
+
+# Second pass: the sources added for the implications section
+
+Added 20 September 2026, verified the same way. Each was checked against Crossref (authors,
+venue, volume, issue, pages, year, DOI) or, for the two regulations and the three industry
+sources, against the publisher's own page. The bibliography now holds 48 entries; every one is
+cited in the text, and no entry is cited that is not in the bibliography (checked mechanically).
+
+| Claim in the paper | Source | Checked |
+|---|---|---|
+| Fast, automatic judgement is one of two systems, the second of which corrects it | Kahneman, *Thinking, Fast and Slow*, 2011 | ✓ |
+| Time pressure changes which answer people give, not just how fast | Suter & Hertwig 2011, *Cognition* 119(3) | ✓ DOI |
+| Responsibility gap when a machine decides | Matthias 2004; Sparrow 2007 | ✓ DOIs |
+| Meaningful human control requires tracking reasons and tracing to a person | Santoni de Sio & van den Hoven 2018 | ✓ DOI |
+| Automating the routine leaves people supervising what they no longer practise | Bainbridge 1983, *Automatica* | ✓ DOI |
+| People follow machine recommendations against their own evidence | Skitka et al. 1999; Parasuraman & Riley 1997; Goddard et al. 2012 (clinical) | ✓ DOIs |
+| Mandated human oversight can become a legitimating ritual | Green 2022; Zerilli et al. 2019 | ✓ DOIs |
+| Automated decisions can outrun human intervention; circuit breakers as mandated slowness | Kirilenko et al. 2017, *Journal of Finance* | ✓ DOI (the published version, not the SSRN preprint) |
+| Standard map of algorithmic-ethics concerns, incl. traceability | Mittelstadt et al. 2016 | ✓ DOI |
+| Rule by systems whose grounds cannot be contested | Danaher 2016 | ✓ DOI |
+| Who writes the question is a social question | Rahwan 2018 | ✓ DOI |
+| Moral preferences over such dilemmas vary across cultures | Awad et al. 2018, *Nature* | ✓ DOI |
+| People want others' cars utilitarian and their own protective | Bonnefon et al. 2016, *Science* | ✓ DOI |
+| A deployed recidivism tool no better than untrained people | Dressel & Farid 2018, *Science Advances* | ✓ DOI |
+| A widely deployed sepsis model performed worse than advertised | Wong et al. 2021, *JAMA Internal Medicine* | ✓ DOI |
+| Outsourcing judgement erodes the skill | Vallor 2015, *Philosophy & Technology* | ✓ DOI (published 2015 in vol. 28(1); Crossref lists the 2014 online-first date) |
+| Overseers must stay aware of automation bias, interpret output, override or stop the system | Regulation (EU) 2024/1689, Art. 14 | ✓ wording checked against the article text |
+| Right not to be subject to a purely automated decision | Regulation (EU) 2016/679, Art. 22 | ✓ |
+| A claim reviewed, fraud-checked, approved and paid in three seconds | Lemonade blog 2017, plus *Carrier Management* coverage | ✓ company source and independent trade report |
+| Moderation at a scale only automation reaches; precision around 91–92 % | Meta Integrity Reports, H1 2026 | ✓ |
+
+## Note on the industry sources
+
+The Lemonade record is a company claim about its own product, reported by trade press; it is
+cited as an example of what is already deployed, not as a measurement. The Meta figures are
+self-reported platform statistics. Both are labelled as such in the text.

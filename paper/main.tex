@@ -55,7 +55,7 @@
 \hypersetup{
   pdftitle={A Quarter of a Second to Decide Who Lives},
   pdfauthor={Andreas Blum},
-  pdfsubject={A decision model takes the bunker exam from the film The Philosophers},
+  pdfsubject={Machine decision latency does not mark the hard cases: a decision model on the moral dilemmas of the film The Philosophers},
   pdfkeywords={decision models, moral judgement, human-AI comparison, decision latency, AI ethics},
 }
 
@@ -75,7 +75,7 @@
   Machine Decision Latency Does Not Mark the Hard Cases}
 \author{Andreas~Blum%
 \thanks{A. Blum is an independent researcher, Tacherting, Germany (e-mail: andreas.blum@tum.de).}%
-\thanks{Manuscript prepared 20 September 2026. Data and code: \url{https://github.com/Andymulb/jev_the_philosopher}.}}
+\thanks{Manuscript prepared 21 September 2026. Data and code: \url{https://github.com/Andymulb/jev_the_philosopher}.}}
 
 \begin{document}
 \maketitle
@@ -92,7 +92,9 @@ returns a typed choice with probabilities instead of text~\cite{typesafe_blog}, 
 against \HumanFastest--\HumanSlowest\,s for people in a classic laboratory study~\cite{greene2001}.
 Its answers were stable across repetitions (largest spread \MaxSpread) but moved substantially when
 the same dilemma was reworded, and it gave the film's answer on \NAgree{} of \NFilmQuestions{}
-questions with a known answer, a different one on \NDisagree{} and none on \NUndecided. We argue
+questions with a known answer, a different one on \NDisagree{} and was undecided on \NUndecided.
+Given one further fact about each candidate, it revised a third of its choices, yet its thinner
+earlier answers had sounded no less decided. We argue
 that the loss of difficulty-correlated latency, rather than speed in itself, is what institutions
 adopting such models have to design around: the uncertainty is still reported, but only as a number
 that something has to be built to read.
@@ -133,8 +135,10 @@ This paper contributes:
   \item a catalogue of \NQuestionIds{} moral decisions from the film, written as typed questions
     together with the answers the film's characters give, published as data
     (Section~\ref{sec:method}, Appendix~\ref{app:results});
-  \item measurements of how stable those answers are across repetitions and how far they move when
-    a dilemma is reworded (Sections~\ref{sec:stability}--\ref{sec:framing});
+  \item measurements of how stable those answers are across repetitions, how far they move when a
+    dilemma is reworded, and how far they move when the film supplies one further fact about each
+    candidate --- without the thinner answers having looked any less decided
+    (Sections~\ref{sec:stability}--\ref{sec:framing});
   \item an analysis of what decisions at this speed and price mean for the institutions adopting
     them, and what follows for how such systems should be built
     (Section~\ref{sec:implications}).

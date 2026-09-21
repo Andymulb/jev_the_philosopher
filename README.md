@@ -20,6 +20,10 @@ ten times each, through OpenRouter.
 - **Stable when repeated, sensitive to wording.** Across ten runs answers varied by at most 0.08.
   Rewording the same dilemma moved them far more: the trolley problem gave 0.99 for diverting as
   a choice between options and 0.78 as a yes/no question.
+- **It uses added context, but never signals having had too little.** Round two judges the same
+  21 people with one extra fact each: Jev's answers moved by a median of 0.15, up to 0.67, and
+  three of the ten bunker places changed hands. Yet its round-one answers, resting on a single
+  word of biography, sat just as far from 0.5 as the better-informed ones.
 - **Agreement with the film is partial.** On the 29 questions where the film makes the
   characters' decision clear, Jev matched it 11 times, differed 11 times and was genuinely
   undecided (0.45–0.55) 7 times. In the three bunker rounds it shared 9, 8 and 7 of its ten
