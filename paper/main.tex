@@ -72,7 +72,7 @@
 \setlist{itemsep=2pt,topsep=4pt}
 
 \title{A Quarter of a Second to Decide Who Lives:\\
-  A Decision Model Takes the Bunker Exam from the Film \emph{The Philosophers}}
+  Machine Decision Latency Does Not Mark the Hard Cases}
 \author{Andreas~Blum%
 \thanks{A. Blum is an independent researcher, Tacherting, Germany (e-mail: andreas.blum@tum.de).}%
 \thanks{Manuscript prepared 20 September 2026. Data and code: \url{https://github.com/Andymulb/jev_the_philosopher}.}}
@@ -81,7 +81,21 @@
 \maketitle
 
 \begin{abstract}
-\noindent In the film \emph{The Philosophers} (2013, also released as \emph{After the Dark}), a teacher asks his class which 10 of 21 people should enter a bunker to survive a nuclear apocalypse~\cite{huddles2013}. We put \NQuestionIds{} questions from the film to Jev~1.13, a \enquote{decision model} that does not write text but returns a typed choice with probabilities~\cite{typesafe_blog}. Every question was asked \NRuns{} times (\NRequests{} requests in total). Jev gave the same answer as the film's characters on \NAgree{} of \NFilmQuestions{} questions, a different answer on \NDisagree{}, and was undecided on \NUndecided{}. Its answers barely changed between runs, but they did change when the same dilemma was worded differently. Jev needed a median of \LatMedianSec{}\,s per answer, whether the question was easy or hard, while people in a classic laboratory study needed \HumanFastest--\HumanSlowest\,s per moral dilemma~\cite{greene2001}.
+\noindent When people judge a moral dilemma, the hard cases take longer: the slowest answers are
+those in which a person overrules an immediate emotional reaction~\cite{greene2001}. That delay is
+a signal others can read, and institutions have long used it to spot the cases that deserve a
+second look. This paper reports that a decision model emits no such signal. Jev~1.13, a model that
+returns a typed choice with probabilities instead of text~\cite{typesafe_blog}, answered
+\NQuestionIds{} dilemmas taken from the film \emph{The Philosophers}~\cite{huddles2013},
+\NRuns{} times each (\NRequests{} requests), at a median of \LatMedian\,ms per request:
+\LatTorn\,ms on the questions where it was almost undecided and \LatSure\,ms where it was not,
+against \HumanFastest--\HumanSlowest\,s for people in a classic laboratory study~\cite{greene2001}.
+Its answers were stable across repetitions (largest spread \MaxSpread) but moved substantially when
+the same dilemma was reworded, and it gave the film's answer on \NAgree{} of \NFilmQuestions{}
+questions with a known answer, a different one on \NDisagree{} and none on \NUndecided. We argue
+that the loss of difficulty-correlated latency, rather than speed in itself, is what institutions
+adopting such models have to design around: the uncertainty is still reported, but only as a number
+that something has to be built to read.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -97,14 +111,33 @@ The film \emph{The Philosophers} turns such thought experiments into a story~\ci
 
 Recently, a new kind of AI model has appeared that is built specifically for such decisions. Jev, released by TypeSafe in September 2026~\cite{openrouter_model}, does not generate text. It receives a description of a situation and a set of typed questions, and it returns an answer for each question together with probabilities~\cite{typesafe_blog,typesafe_systemone}. This makes it a natural candidate for the class's exam.
 
-We asked three simple questions: what does Jev decide, and how often does it decide like the characters in the film? How consistent is it, across repeated runs and across different wordings of the same dilemma? And how long does it take, compared with people?
+We asked three simple questions: what does Jev decide, and how often does it decide like the
+characters in the film? How consistent is it, across repeated runs and across different wordings of
+the same dilemma? And how long does it take, compared with people?
 
-This paper makes four contributions:
+The third question turned out to be the consequential one, and it is the claim this paper makes:
+\emph{a decision model's answer time carries no information about how hard the question is}. For
+people it does. The extra seconds a person spends overruling an instinct are visible to colleagues,
+supervisors and procedures, and they mark a case as contested without anyone having to measure
+anything~\cite{greene2001}. A model that answers everything in the same quarter of a second removes
+that mark. Its uncertainty still exists, and Jev reports it honestly as a probability, but reading
+it is now something a system has to be built to do. We argue in Section~\ref{sec:implications} that
+this, rather than speed in itself, is what the fields now adopting such models have to design
+around.
+
+This paper contributes:
 \begin{enumerate}[label=(\arabic*),leftmargin=1.6em]
-  \item a catalogue of \NQuestionIds{} moral decisions from the film, written as typed questions together with the answers the film's characters give, published as data (Section~\ref{sec:method}, Appendix~\ref{app:results});
-  \item a measurement of one decision model's answers to them, repeated \NRuns{} times per question, covering stability, agreement with the film and sensitivity to wording (Sections~\ref{sec:stability}--\ref{sec:framing});
-  \item a latency measurement showing that the model's decision time is independent of the difficulty of the question, set against published human decision times (Section~\ref{sec:timing});
-  \item a discussion of what decisions at this speed and price mean for the fields that are adopting them (Section~\ref{sec:implications}).
+  \item evidence that one decision model's answer time is independent of the difficulty of the
+    question, measured over \NRequests{} requests and set against published human decision times
+    (Section~\ref{sec:timing});
+  \item a catalogue of \NQuestionIds{} moral decisions from the film, written as typed questions
+    together with the answers the film's characters give, published as data
+    (Section~\ref{sec:method}, Appendix~\ref{app:results});
+  \item measurements of how stable those answers are across repetitions and how far they move when
+    a dilemma is reworded (Sections~\ref{sec:stability}--\ref{sec:framing});
+  \item an analysis of what decisions at this speed and price mean for the institutions adopting
+    them, and what follows for how such systems should be built
+    (Section~\ref{sec:implications}).
 \end{enumerate}
 
 Table~\ref{tab:summary} summarises the results.
@@ -121,7 +154,7 @@ Table~\ref{tab:summary} summarises the results.
   \item[Round three.] The student Petra chooses alone. She picks people for art, joy and companionship rather than for survival skills, arguing that a short life lived well is better than a long one merely survived.
 \end{description}
 
-\noindent The film frames the rounds as a contest between cold calculation and human values~\cite{blimey_explained,lovepirate2014}. Critics have called its philosophy shallow~\cite{philosophyinfilm2018,horizonfringe2014,neverfeltbetter2014}, but its questions are real and easy to state, which is exactly what we need.
+\noindent The film frames the rounds as a contest between cold calculation and human values~\cite{blimey_explained,lovepirate2014}, and critics have called its philosophy shallow~\cite{philosophyinfilm2018,horizonfringe2014,neverfeltbetter2014}. For the purpose of this study that hardly matters. What the film provides is a ready-made battery of moral decisions that are concrete, varied in difficulty and, unusually, come with recorded answers, because the characters resolve each of them on screen. It is a convenient instrument for probing a model, not an authority on ethics.
 
 \subsection{How quickly do people decide moral dilemmas?}
 
@@ -152,6 +185,38 @@ Jev never explains its answers. According to its maker, its probabilities are ca
 \paragraph{Timing} For each request, OpenRouter records how long the provider took to answer~\cite{openrouter_generation}. We used this \emph{provider latency}, which excludes the network between us and OpenRouter. Including the network, a request from our machine took about 0.7\,s in a spot check.
 
 \section{Results}
+
+\subsection{Thinking time}\label{sec:timing}
+
+Jev needed a median of \LatMedian\,ms per request (mean \LatMean\,ms, range \LatMin--\LatMax\,ms), measured by OpenRouter without network time. This was the same for all kinds of questions. Questions on which Jev was almost undecided took \LatTorn\,ms (median over \NTorn{} questions), clear-cut ones \LatSure\,ms (\NSure{} questions). The correlation between uncertainty and time was weak ($r=\CorrUncertaintyLatency$, $n=\NCorrPoints$). Even the requests with 21 yes/no questions for a whole bunker round took about 0.3\,s, because Jev answers the questions of a request in parallel.
+
+People in Greene et al.'s study needed \HumanFastest--\HumanSlowest\,s per dilemma~\cite{greene2001}, about \SpeedupLow{} to \SpeedupHigh{} times longer (Figure~\ref{fig:timing}). Unlike Jev, people take longer when a decision is hard in a particular way: when they overrule their first emotional reaction.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xbar, /pgf/bar width=6pt, /pgf/bar shift=0pt,
+  scale only axis, width=3.5cm, height=3.4cm,
+  xmin=0, xmax=8.6, ymin=-0.6, ymax=4.6,
+  xlabel={Seconds per decision}, label style={font=\footnotesize},
+  xtick={0,2,4,6},
+  ytick={0,...,4}, yticklabels from table={generated/timing.dat}{label},
+  yticklabel style={font=\tiny,text width=3.3cm,align=right},
+  tick label style={font=\tiny},
+  xmajorgrids, grid style={black!8},
+  axis x line*=bottom, axis y line*=left,
+  nodes near coords, nodes near coords style={font=\tiny,anchor=west},
+  point meta=explicit symbolic,
+]
+\addplot[fill=people!55,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{0:0}]{generated/timing.dat};
+\addplot[fill=jev!80,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{1:1}]{generated/timing.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{How long a decision takes. Jev: median provider latency over \NRequests{} requests. People: average decision times read from Fig.~3 of Greene \emph{et al.}~\cite{greene2001} (accuracy about $\pm0.1$\,s); \enquote{a question with no moral side} spans 5.5--6.0\,s.}
+\label{fig:timing}
+\end{figure}
+
 
 \input{generated/summary_table.tex}
 
@@ -260,36 +325,6 @@ The same dilemma can be asked as a yes/no question or as a choice between option
 \end{itemize}
 Part of this is expected: a choice only compares the options offered, while a yes/no question asks whether a single statement is true~\cite{typesafe_skill}. The last example, however, shows two answers that are hard to reconcile.
 
-\subsection{Thinking time}\label{sec:timing}
-
-Jev needed a median of \LatMedian\,ms per request (mean \LatMean\,ms, range \LatMin--\LatMax\,ms), measured by OpenRouter without network time. This was the same for all kinds of questions. Questions on which Jev was almost undecided took \LatTorn\,ms (median over \NTorn{} questions), clear-cut ones \LatSure\,ms (\NSure{} questions). The correlation between uncertainty and time was weak ($r=\CorrUncertaintyLatency$, $n=\NCorrPoints$). Even the requests with 21 yes/no questions for a whole bunker round took about 0.3\,s, because Jev answers the questions of a request in parallel.
-
-People in Greene et al.'s study needed \HumanFastest--\HumanSlowest\,s per dilemma~\cite{greene2001}, about \SpeedupLow{} to \SpeedupHigh{} times longer (Figure~\ref{fig:timing}). Unlike Jev, people take longer when a decision is hard in a particular way: when they overrule their first emotional reaction.
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  xbar, /pgf/bar width=6pt, /pgf/bar shift=0pt,
-  scale only axis, width=3.5cm, height=3.4cm,
-  xmin=0, xmax=8.6, ymin=-0.6, ymax=4.6,
-  xlabel={Seconds per decision}, label style={font=\footnotesize},
-  xtick={0,2,4,6},
-  ytick={0,...,4}, yticklabels from table={generated/timing.dat}{label},
-  yticklabel style={font=\tiny,text width=3.3cm,align=right},
-  tick label style={font=\tiny},
-  xmajorgrids, grid style={black!8},
-  axis x line*=bottom, axis y line*=left,
-  nodes near coords, nodes near coords style={font=\tiny,anchor=west},
-  point meta=explicit symbolic,
-]
-\addplot[fill=people!55,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{0:0}]{generated/timing.dat};
-\addplot[fill=jev!80,draw=none] table[x=s,y=idx,meta=txt,restrict expr to domain={\thisrow{isjev}}{1:1}]{generated/timing.dat};
-\end{axis}
-\end{tikzpicture}
-\caption{How long a decision takes. Jev: median provider latency over \NRequests{} requests. People: average decision times read from Fig.~3 of Greene \emph{et al.}~\cite{greene2001} (accuracy about $\pm0.1$\,s); \enquote{a question with no moral side} spans 5.5--6.0\,s.}
-\label{fig:timing}
-\end{figure}
 
 \section{Discussion}
 
@@ -299,7 +334,9 @@ the same time, it is not a moral authority. On many of the film's questions it g
 answer from the characters, on several it was genuinely undecided, and some of its answers
 changed with the form of the question. Taken together, three properties stand out, and the next
 section takes them up in turn: the decision time is constant, the cost is negligible, and the
-wording of the question carries part of the answer.
+wording of the question carries part of the answer. The first is the one this paper is about. The
+other two decide how much it matters: a signal that has disappeared matters little if the decisions
+are few and expensive, and a great deal if they are continuous and nearly free.
 
 \section{Implications: decisions at machine speed}\label{sec:implications}
 
@@ -524,12 +561,13 @@ This is a small, informal study.
 
 \section{Conclusion}
 
-Put through the bunker exam from \emph{The Philosophers}, the decision model Jev answers every
-dilemma in about a quarter of a second, gives nearly identical answers when asked again, and
-agrees with the film's characters on roughly a third of the questions with a known answer. Its
-answers depend on how a dilemma is worded, and its speed does not depend on how hard the
-dilemma is. People take \SpeedupLow{} to \SpeedupHigh{} times longer and slow down precisely
-when a decision goes against their instinct.
+A decision model's answer time tells us nothing about how hard the question was. Put through the
+bunker exam from \emph{The Philosophers}, Jev answered every dilemma in about a quarter of a
+second: \LatTorn\,ms on the questions where it was almost undecided, \LatSure\,ms where it was
+not. People take \SpeedupLow{} to \SpeedupHigh{} times longer and slow down precisely when a
+decision goes against their instinct. Along the way the model gave nearly identical answers when
+asked again, changed its answer when the dilemma was reworded, and agreed with the film's
+characters on roughly a third of the questions with a known answer.
 
 Two of these properties matter beyond the experiment. Because the cost of a judgement has
 fallen to about \$\CostPerDecision, the limit on how many judgements an institution makes is no

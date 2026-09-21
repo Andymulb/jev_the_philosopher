@@ -89,6 +89,21 @@ def main():
     agree_half = sum(agrees_at_half(q) for i in items if i["kind"] == "questions" for q in i["questions"] if "verdict" in q)
 
     lat = meta["latency_ms"]
+    torn_med, sure_med = round(statistics.median(torn)), round(statistics.median(sure))
+
+    # every single answer value, keyed as ID@question[@option], for the framing comparison
+    vals = {}
+    for it in items:
+        if it["kind"] != "questions":
+            continue
+        for q in it["questions"]:
+            key = f'{it["id"]}@{q["key"]}'
+            if q["type"] == "noul":
+                vals[key] = q["p"]
+            elif q["type"] == "choice":
+                for o in q["options"]:
+                    vals[f'{key}@{o["key"]}'] = o["p"]
+    trolley_gap = abs(vals["QA.1@action@divert"] - vals["QA.1@pull"])
     n = [
         macro("NAgreeHalf", agree_half),
         macro("NRuns", meta["runs"]), macro("NRequests", meta["requests"]),
@@ -122,15 +137,17 @@ def main():
     # ---- summary table (Table I) -----------------------------------------
     sel_over = f'{selections["Q1.1"]["overlap"]}, {selections["Q2.1"]["overlap"]} and {selections["Q3.2"]["overlap"]} of 10'
     summary_rows = [
-        ("Questions put to Jev", f'{len(items)} requests covering {len({i["id"] for i in items})} questions, '
-                                 f'{meta["runs"]} runs each ({meta["requests"]} requests)', "sec:method"),
+        ("Jev's time per decision", f'median {lat["median"]}\\,ms (range {lat["min"]}--{lat["max"]}\\,ms), '
+                                    f'{torn_med}\\,ms when almost undecided vs {sure_med}\\,ms when clear-cut', "sec:timing"),
+        ("Human time per dilemma \\cite{greene2001}", f'{human_fastest:.1f}--{human_slowest:.1f}\\,s, longest when overruling an instinct', "sec:timing"),
+        ("Stability over the repeated runs", f'largest spread {max(spreads):.2f}, median {statistics.median(spreads):.3f}', "sec:stability"),
+        ("Effect of rewording the same dilemma", f'{trolley_gap:.2f} between two framings of the trolley problem; '
+                                                 f'opposite conclusions on meaning versus survival', "sec:framing"),
         ("Same answer as the film", f'{verdicts.count("agrees")} of {len(verdicts)} questions '
                                     f'({verdicts.count("disagrees")} different, {verdicts.count("undecided")} undecided)', "sec:agreement"),
         ("Shared picks in the three bunker rounds", sel_over, "sec:rounds"),
-        ("Stability over the repeated runs", f'largest spread {max(spreads):.2f}, median {statistics.median(spreads):.3f}', "sec:stability"),
-        ("Jev's time per decision", f'median {lat["median"]}\\,ms (range {lat["min"]}--{lat["max"]}\\,ms)', "sec:timing"),
-        ("Human time per dilemma \\cite{greene2001}", f'{human_fastest:.1f}--{human_slowest:.1f}\\,s', "sec:timing"),
-        ("Cost of the whole experiment", f'\\${meta["cost"]:.4f}', "sec:method"),
+        ("Scale of the experiment", f'{len(items)} requests covering {len({i["id"] for i in items})} questions, '
+                                    f'{meta["runs"]} runs each ({meta["requests"]} requests), \\${meta["cost"]:.4f}', "sec:method"),
     ]
     body = "\n".join(f"{label} & {value} & \\S\\ref{{{ref}}} \\\\" for label, value, ref in summary_rows)
     (OUT / "summary_table.tex").write_text(

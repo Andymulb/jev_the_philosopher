@@ -4,7 +4,8 @@ What does a *decision model* answer when you give it the moral dilemmas from the
 *The Philosophers* (2013, US title *After the Dark*), and how long does it take?
 
 This repository holds the experiment, the raw answers and the LaTeX source of the paper
-**"A Quarter of a Second to Decide Who Lives"**.
+**"A Quarter of a Second to Decide Who Lives: Machine Decision Latency Does Not Mark the Hard
+Cases"**.
 
 Jev 1.13 by TypeSafe is not a chat model. It takes a situation and typed questions, and returns
 a typed answer with probabilities and no explanation. We put 39 questions from the film to it,
