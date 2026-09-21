@@ -1,5 +1,8 @@
 # Jev takes the bunker exam
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22882178.svg)](https://doi.org/10.5281/zenodo.22882178)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 What does a *decision model* answer when you give it the moral dilemmas from the film
 *The Philosophers* (2013, US title *After the Dark*), and how long does it take?
 
@@ -88,6 +91,17 @@ exactly as sent and received, one line per request.
   OpenRouter.
 - One model version, one day, mostly one wording per question. Because the model is so stable
   across runs, more repetitions add little; more wordings would add more.
+
+## Citing
+
+Archived on Zenodo. The DOI below always resolves to the newest version; each release also has its
+own DOI (v1.2.0 is `10.5281/zenodo.22882179`).
+
+> Blum, A. (2026). *A Quarter of a Second to Decide Who Lives: Machine Latency Does Not Mark the
+> Hard Cases*. Zenodo. https://doi.org/10.5281/zenodo.22882178
+
+`CITATION.cff` carries the same details, so GitHub's "Cite this repository" button and most
+reference managers pick them up automatically.
 
 ## Licence
 
