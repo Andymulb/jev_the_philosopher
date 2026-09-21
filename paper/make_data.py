@@ -104,6 +104,15 @@ def main():
                 for o in q["options"]:
                     vals[f'{key}@{o["key"]}'] = o["p"]
     trolley_gap = abs(vals["QA.1@action@divert"] - vals["QA.1@pull"])
+
+    # Round two judges the same 21 people with one extra trait each: a natural context manipulation.
+    r1 = {r["name"]: r["p"] for r in selections["Q1.1"]["rows"]}
+    r2 = {r["name"]: r["p"] for r in selections["Q2.1"]["rows"]}
+    shifts = sorted(abs(r2[n] - r1[n]) for n in r1)
+    top10 = lambda r: {n for n, _ in sorted(r.items(), key=lambda kv: -kv[1])[:10]}
+    places_changed = len(top10(r1) - top10(r2))
+    dist_from_half = lambda r: statistics.median(abs(p - 0.5) for p in r.values())
+    in_band = lambda r: sum(1 for p in r.values() if UNDECIDED[0] <= p <= UNDECIDED[1])
     n = [
         macro("NAgreeHalf", agree_half),
         macro("NRuns", meta["runs"]), macro("NRequests", meta["requests"]),
@@ -128,6 +137,13 @@ def main():
         macro("HumanFastest", f"{human_fastest:.1f}"), macro("HumanSlowest", f"{human_slowest:.1f}"),
         macro("SpeedupLow", round(human_fastest * 1000 / lat["median"])),
         macro("SpeedupHigh", round(human_slowest * 1000 / lat["median"])),
+        macro("ContextMedianShift", f"{statistics.median(shifts):.2f}"),
+        macro("ContextMaxShift", f"{max(shifts):.2f}"),
+        macro("ContextMovers", sum(1 for s in shifts if s > 0.2)),
+        macro("ContextPlacesChanged", places_changed),
+        macro("RoundOneDistHalf", f"{dist_from_half(r1):.2f}"),
+        macro("RoundTwoDistHalf", f"{dist_from_half(r2):.2f}"),
+        macro("RoundOneInBand", in_band(r1)), macro("RoundTwoInBand", in_band(r2)),
         macro("CostPerDecision", f'{meta["cost"] / meta["requests"]:.5f}'),
         macro("CostPerMillion", round(meta["cost"] / meta["requests"] * 1e6)),
         macro("DecisionsPerHumanOne", round(human_fastest * 1000 / lat["median"])),

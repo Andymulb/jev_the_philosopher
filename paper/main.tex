@@ -280,6 +280,18 @@ Figure~\ref{fig:nouls} shows all \NNouls{} yes/no answers. Of the \NFilmQuestion
 
 Figure~\ref{fig:rounds} shows whom Jev would let into the bunker. In round one, when only professions were known, Jev's top ten shared \OverlapOne{} people with the film's choice. It preferred the astronaut to the US Senator. In round two, with hidden traits and the duty to repopulate, the overlap was \OverlapTwo: Jev took the astronaut and the genius wine auctioneer instead of the kind housekeeper and the woman with the jewels. In round three, where the goal was a year worth living, the overlap was \OverlapThree{}. Jev's list was similar to Petra's (the poet, the opera singer, the autistic harpist, the fashion designer), but instead of Petra herself, the wine auctioneer and the surgeon it chose the psychotherapist, the kind housekeeper and the astronaut.
 
+The step from round one to round two is also a natural experiment on context: the same 21 people
+are judged again, with one further fact attached to each. Jev used it. Its yes-probability for a
+person moved by a median of \ContextMedianShift{} and by as much as \ContextMaxShift{}---the estate
+agent who turns out to be a trained midwife rises from 0.18 to 0.85---\ContextMovers{} of the 21
+moved by more than 0.20, and \ContextPlacesChanged{} of the ten places changed hands. The film's
+class revised its votes in the same direction, dropping the surgeon over the Ebola risk and the
+electrician over his illness. What did \emph{not} change is how decided the model sounded. In round
+one, knowing nothing but a profession, its answers lay a median of \RoundOneDistHalf{} from 0.5 and
+\RoundOneInBand{} of the 21 fell inside the undecided band; in round two, with a second fact per
+person, the figures were \RoundTwoDistHalf{} and \RoundTwoInBand. The extra context changed the
+answers substantially without the earlier, thinner answers having looked any less certain.
+
 \begin{figure*}[t]
 \centering
 \begin{tikzpicture}
@@ -600,13 +612,22 @@ whoever writes the question becomes uncomfortably strong. The wording is a lever
 in the output, and there is no answer of the form \enquote{ask me again when you know more}.
 
 People do have that answer, even if they use it inconsistently: to sleep on it, to gather the
-missing fact, to decide for now not to decide. We did not measure how often Jev ought to have
-given it, and our experiment cannot: we never varied how much context a question carried, which
-would be the obvious next study. What we can say is that the option was never exercised in
-\NRequests{} requests, and that nothing in the interface provides for it. Where such a model is
-put in charge of consequential decisions, the refusal to answer is not a feature that will emerge
-from the model. It has to be built around it, by people who are willing to be slower than the
-thing they are deploying.
+missing fact, to decide for now not to decide. The film's class does exactly this between rounds,
+and so, in its way, does Jev: told one more fact about each candidate in round two, it revised its
+judgement of a third of the bunker (Section~\ref{sec:rounds}). The model is therefore not blind to
+context. What is missing is the other half of that competence. Its round-one answers, resting on a
+single word of biography, were no less decided than its round-two answers resting on two; nothing
+in the output said \enquote{this is all I have been told}. A system that updates when given more,
+but never asks for more and never marks the moment when it had too little, will keep answering
+exactly as confidently as the question happens to allow.
+
+We did not vary context deliberately---rounds two and three change the rules as well as the
+facts---so the effect we report is an observation from the film's own design rather than a
+controlled result. Doing it properly would be cheap: the same dilemma at three levels of detail,
+asking whether the reported uncertainty moves with what the model was told. Until something like
+that is measured, the safe assumption for anyone deploying such a model is the one the exercise
+suggests: the refusal to answer will not come from the model. It has to be built around it, by
+people who are willing to be slower than the thing they are deploying.
 
 \printbibliography[heading=bibintoc,title={References}]
 
