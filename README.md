@@ -6,8 +6,10 @@
 What does a *decision model* answer when you give it the moral dilemmas from the film
 *The Philosophers* (2013, US title *After the Dark*), and how long does it take?
 
-This repository holds the experiment, the raw answers and the LaTeX source of the paper
+This repository holds the experiment, the raw answers and the paper
 **"A Quarter of a Second to Decide Who Lives: Machine Latency Does Not Mark the Hard Cases"**.
+
+**Read the paper: [paper/jev-philosophers-paper.pdf](paper/jev-philosophers-paper.pdf)** (11 pages)
 
 Jev 1.13 by TypeSafe is not a chat model. It takes a situation and typed questions, and returns
 a typed answer with probabilities and no explanation. We put 39 questions from the film to it,
@@ -40,7 +42,8 @@ questions.json     the 39 questions as typed Jev requests, with the film's answe
 run_tests.py       runs the experiment and fetches each request's latency from OpenRouter
 analysis.py        shared scoring: undecided band, agreement with the film, rankings
 results/           one run: raw answers (raw.jsonl), summary.json, readable summary.md
-paper/main.tex     the paper (IEEE format)
+paper/jev-philosophers-paper.pdf   the paper, ready to read
+paper/main.tex     the paper's LaTeX source (IEEE format)
 paper/references.bib
 paper/make_data.py turns a run into every number, table and plot the paper uses
 paper/source-audit.md   how each source was verified
@@ -59,6 +62,7 @@ cp .env.example .env        # then paste your OpenRouter key into .env
 python3 run_tests.py --runs 10          # ~410 requests, about $0.01, a few minutes
 python3 paper/make_data.py              # results -> paper/generated/
 cd paper && latexmk -pdf main.tex       # -> main.pdf
+cp main.pdf jev-philosophers-paper.pdf  # replace the committed copy
 ```
 
 Useful variants:
